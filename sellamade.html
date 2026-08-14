@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sellamade — Elite Sales Operating System</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='9' y='9' width='30' height='30' rx='4' transform='rotate(45 24 24)' fill='%2312141a' stroke='%23c9974b' stroke-width='2'/%3E%3Cpath d='M15,17 L33,17 L40,24 L24,40 L8,24 Z' fill='%23c9974b'/%3E%3Cpath d='M15,17 L24,40 M33,17 L24,40 M8,24 L40,24' stroke='%2312141a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12141a;
+    --panel:#1b1f27;
+    --panel-raised:#232833;
+    --hairline:#2c323d;
+    --hairline-soft:#232833;
+    --brass:#c9974b;
+    --brass-dim:#8a7042;
+    --signal:#e2542a;
+    --success:#5fa97a;
+    --text:#edeff3;
+    --muted:#8991a3;
+    --muted-dim:#5c6472;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;}
+  body{min-height:100vh; padding-bottom:80px;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;} }
+
+  ::selection{ background:var(--brass); color:#12141a; }
+
+  .display{ font-family:'Barlow Condensed',sans-serif; font-weight:700; letter-spacing:0.01em; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+
+  a{ color:inherit; }
+
+  /* ===== HEADER ===== */
+  header.console{
+    border-bottom:1px solid var(--hairline);
+    background:linear-gradient(180deg, #171a20 0%, #12141a 100%);
+    padding:22px clamp(16px,4vw,48px) 0;
+    position:sticky; top:0; z-index:50;
+  }
+  .console-top{ display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; padding-bottom:18px;}
+  .brand-block{ display:flex; align-items:center; gap:14px;}
+  .brand-title{ font-size:22px; letter-spacing:0.06em; text-transform:uppercase; line-height:1;}
+  .brand-sub{ font-size:11px; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px;}
+  .callsign-wrap{ display:flex; align-items:center; gap:10px; font-size:11px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;}
+  #callsignInput{
+    background:transparent; border:none; border-bottom:1px solid var(--hairline); color:var(--brass);
+    font-family:'JetBrains Mono',monospace; font-size:12px; padding:4px 2px; width:120px; letter-spacing:0.05em;
+  }
+  #callsignInput:focus{ outline:none; border-bottom-color:var(--brass);}
+  .storage-badge{ font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.06em; color:var(--success); border:1px solid var(--hairline); padding:3px 7px; border-radius:3px; cursor:help; }
+
+  nav.tabs{ display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
+  nav.tabs::-webkit-scrollbar{ display:none; }
+  nav.tabs button{
+    background:none; border:none; color:var(--muted); font-family:'Barlow Condensed',sans-serif; font-weight:600;
+    font-size:14.5px; letter-spacing:0.05em; text-transform:uppercase; padding:12px 18px; cursor:pointer;
+    border-bottom:2px solid transparent; white-space:nowrap; transition:color .15s ease, border-color .15s ease;
+  }
+  nav.tabs button:hover{ color:var(--text); }
+  nav.tabs button.active{ color:var(--brass); border-bottom-color:var(--brass); }
+
+  main{ max-width:1180px; margin:0 auto; padding:36px clamp(16px,4vw,48px) 0; }
+  .view{ display:none; animation:fadeIn .25s ease; }
+  .view.active{ display:block; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  section.panel{
+    background:var(--panel); border:1px solid var(--hairline); border-radius:6px; padding:22px 24px; margin-bottom:20px;
+  }
+  .panel-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; flex-wrap:wrap; gap:8px;}
+  .panel-title{ font-size:19px; text-transform:uppercase; letter-spacing:0.04em;}
+  .panel-tag{ font-size:10.5px; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase;}
+  .eyebrow{ font-size:11px; color:var(--brass); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px; font-weight:600;}
+
+  /* ===== DASHBOARD ===== */
+  .dash-grid{ display:grid; grid-template-columns: 300px 1fr; gap:20px; }
+  @media (max-width:800px){ .dash-grid{ grid-template-columns:1fr; } }
+
+  .gauge-wrap{ display:flex; flex-direction:column; align-items:center; padding:26px 10px 10px;}
+  .gauge-figure{ position:relative; width:220px; height:220px;}
+  .gauge-label{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .gauge-pct{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:52px; color:var(--brass); line-height:1;}
+  .gauge-caption{ font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-top:6px;}
+  .day-counter{ margin-top:18px; text-align:center; }
+  .day-counter .n{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--brass); letter-spacing:0.06em;}
+  .day-counter .l{ font-size:10px; color:var(--muted); letter-spacing:0.14em; text-transform:uppercase; margin-top:2px;}
+
+  .stat-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px;}
+  @media (max-width:700px){ .stat-row{ grid-template-columns:repeat(2,1fr);} }
+  .stat-card{ background:var(--panel-raised); border:1px solid var(--hairline); border-radius:5px; padding:14px 16px; }
+  .stat-num{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:24px; color:var(--text);}
+  .stat-num small{ font-size:13px; color:var(--muted); font-weight:400;}
+  .stat-lbl{ font-size:10.5px; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-top:6px;}
+
+  .focus-line{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--hairline-soft); font-size:13.5px;}
+  .focus-line:last-child{ border-bottom:none; }
+  .dot{ width:7px; height:7px; border-radius:50%; background:var(--brass); flex-shrink:0;}
+  .dot.off{ background:var(--hairline);}
+
+  select, .btn-select{
+    background:var(--panel-raised); color:var(--text); border:1px solid var(--hairline); border-radius:4px;
+    padding:8px 10px; font-family:'Inter',sans-serif; font-size:13px; cursor:pointer;
+  }
+  select:focus{ outline:1px solid var(--brass); }
+
+  /* ===== CHECKLIST ITEMS ===== */
+  .check-item{ display:flex; align-items:flex-start; gap:10px; padding:7px 0; font-size:14px; line-height:1.4; cursor:pointer; }
+  .check-item input[type=checkbox]{
+    appearance:none; -webkit-appearance:none; width:17px; height:17px; border:1.5px solid var(--muted); border-radius:3px;
+    flex-shrink:0; margin-top:2px; cursor:pointer; position:relative; background:transparent; transition:all .12s ease;
+  }
+  .check-item input[type=checkbox]:checked{ background:var(--brass); border-color:var(--brass); }
+  .check-item input[type=checkbox]:checked::after{
+    content:''; position:absolute; left:5px; top:1px; width:4px; height:9px; border:solid #12141a; border-width:0 2px 2px 0; transform:rotate(45deg);
+  }
+  .check-item span.txt{ color:var(--text); }
+  .check-item input:checked ~ span.txt{ color:var(--muted); text-decoration:line-through; text-decoration-color:var(--hairline);}
+  .check-col-title{ font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px; font-weight:600;}
+  .check-col-title:first-child{ margin-top:0; }
+
+  /* ===== MONTH ACCORDION ===== */
+  .month-item{ border:1px solid var(--hairline); border-radius:5px; margin-bottom:10px; overflow:hidden; background:var(--panel-raised);}
+  .month-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 18px; cursor:pointer; gap:14px;}
+  .month-head:hover{ background:#262c38;}
+  .month-head-left{ display:flex; align-items:center; gap:14px; min-width:0;}
+  .month-num{ font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:26px; color:var(--brass); width:44px; text-align:center; flex-shrink:0;}
+  .month-name{ font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:17px; text-transform:uppercase; letter-spacing:0.02em;}
+  .month-goal{ font-size:12px; color:var(--muted); margin-top:2px; max-width:520px;}
+  .month-progress-mini{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); flex-shrink:0;}
+  .month-progress-mini b{ color:var(--brass); }
+  .chevron{ transition:transform .18s ease; color:var(--muted); flex-shrink:0;}
+  .month-item.open .chevron{ transform:rotate(90deg); }
+  .month-body{ display:none; padding:4px 22px 20px; border-top:1px solid var(--hairline);}
+  .month-item.open .month-body{ display:block; }
+  .month-body-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 32px; margin-top:14px;}
+  @media (max-width:700px){ .month-body-grid{ grid-template-columns:1fr; } }
+  .book-chip{ display:inline-block; font-size:11px; font-family:'JetBrains Mono',monospace; padding:3px 8px; border:1px solid var(--hairline); border-radius:3px; color:var(--muted); margin:2px 6px 2px 0;}
+  .book-chip.done{ border-color:var(--success); color:var(--success); }
+
+  /* ===== TABLE (roleplay/books) ===== */
+  .filter-row{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center;}
+  table.data-table{ width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.data-table th{
+    text-align:left; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted);
+    padding:9px 10px; border-bottom:1px solid var(--hairline); font-weight:500;
+  }
+  table.data-table td{ padding:9px 10px; border-bottom:1px solid var(--hairline-soft); vertical-align:middle;}
+  table.data-table tr:hover td{ background:rgba(201,151,75,0.04); }
+  .lvl-badge{ font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:2px 7px; border-radius:3px; letter-spacing:0.04em;}
+  .lvl-1{ background:rgba(95,169,122,0.15); color:var(--success);}
+  .lvl-2{ background:rgba(201,151,75,0.15); color:var(--brass);}
+  .lvl-3{ background:rgba(226,84,42,0.15); color:var(--signal);}
+  .lvl-4{ background:rgba(226,84,42,0.28); color:#ff8a6a;}
+  .rp-checkbox{
+    appearance:none; -webkit-appearance:none; width:17px; height:17px; border:1.5px solid var(--muted); border-radius:3px;
+    cursor:pointer; position:relative; background:transparent; transition:all .12s ease;
+  }
+  .rp-checkbox:checked{ background:var(--brass); border-color:var(--brass); }
+  .rp-checkbox:checked::after{
+    content:''; position:absolute; left:5px; top:1px; width:4px; height:9px; border:solid #12141a; border-width:0 2px 2px 0; transform:rotate(45deg);
+  }
+  .score-input{ width:52px; background:var(--panel-raised); border:1px solid var(--hairline); color:var(--text); border-radius:3px; padding:5px 6px; font-family:'JetBrains Mono',monospace; font-size:12.5px; text-align:center;}
+  .score-input:focus{ outline:1px solid var(--brass); }
+  .diff-track{ width:60px; height:5px; background:var(--hairline); border-radius:3px; overflow:hidden; display:inline-block; vertical-align:middle;}
+  .diff-fill{ height:100%; background:var(--brass);}
+
+  /* ===== BOOK STATUS SELECT ===== */
+  .status-select{ font-size:12px; padding:5px 8px; }
+  .tier-badge{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:2px 7px; border-radius:3px; font-family:'JetBrains Mono',monospace;}
+  .tier-1{ background:rgba(201,151,75,0.18); color:var(--brass);}
+  .tier-2{ background:rgba(143,152,168,0.15); color:var(--muted);}
+  .tier-3{ background:rgba(143,152,168,0.08); color:var(--muted-dim, #5c6472);}
+
+  /* ===== JOURNAL ===== */
+  .journal-form{ display:grid; grid-template-columns:1fr 1fr; gap:14px 20px; margin-bottom:18px;}
+  @media (max-width:700px){ .journal-form{ grid-template-columns:1fr; } }
+  .field{ display:flex; flex-direction:column; gap:6px;}
+  .field.full{ grid-column:1 / -1; }
+  .field label{ font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+  .field input, .field textarea{
+    background:var(--panel-raised); border:1px solid var(--hairline); color:var(--text); border-radius:4px;
+    padding:9px 11px; font-family:'Inter',sans-serif; font-size:13.5px; resize:vertical;
+  }
+  .field input:focus, .field textarea:focus{ outline:1px solid var(--brass); }
+  .field textarea{ min-height:64px; }
+
+  .btn-primary{
+    background:var(--brass); color:#12141a; border:none; border-radius:4px; padding:11px 22px;
+    font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:14.5px; letter-spacing:0.05em; text-transform:uppercase;
+    cursor:pointer; transition:filter .12s ease;
+  }
+  .btn-primary:hover{ filter:brightness(1.1); }
+  .btn-ghost{
+    background:none; border:1px solid var(--hairline); color:var(--muted); border-radius:4px; padding:6px 12px;
+    font-size:12px; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .btn-ghost:hover{ color:var(--text); border-color:var(--muted); }
+
+  .entry-card{ border:1px solid var(--hairline); border-radius:5px; padding:14px 16px; margin-bottom:10px; background:var(--panel-raised);}
+  .entry-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+  .entry-date{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--brass);}
+  .entry-meta{ font-size:11px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .entry-body{ font-size:13px; color:var(--muted); line-height:1.5;}
+  .entry-body b{ color:var(--text); font-weight:500;}
+  .empty-state{ color:var(--muted); font-size:13px; padding:20px 0; text-align:center; border:1px dashed var(--hairline); border-radius:5px;}
+
+  /* ===== SCOREBOARD ===== */
+  .sb-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px 24px; margin-bottom:18px;}
+  @media (max-width:700px){ .sb-grid{ grid-template-columns:1fr; } }
+  .sb-row{ display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .sb-row label{ font-size:13px; color:var(--muted); flex:1;}
+  .sb-row input[type=range]{ width:110px; accent-color:var(--brass); }
+  .sb-row .val{ font-family:'JetBrains Mono',monospace; font-size:13px; width:34px; text-align:right; color:var(--brass);}
+
+  .level-track{ display:flex; gap:4px; margin-top:10px;}
+  .level-seg{ flex:1; height:8px; border-radius:2px; background:var(--hairline);}
+  .level-seg.filled{ background:var(--brass); }
+
+  footer{ text-align:center; padding:36px 20px 10px; color:var(--muted-dim,#5c6472); font-size:11px; letter-spacing:0.08em;}
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:800px){ .two-col{ grid-template-columns:1fr; } }
+
+  .rule-quote{ font-family:'Barlow Condensed',sans-serif; font-size:17px; color:var(--text); border-left:2px solid var(--brass); padding:8px 0 8px 16px; margin-bottom:10px; }
+  .rule-num{ color:var(--brass); font-family:'JetBrains Mono',monospace; font-size:12px; margin-right:8px;}
+</style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<div id="authGate" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(18,20,26,0.96); align-items:center; justify-content:center; flex-direction:column; padding:20px;">
+  <div style="width:100%; max-width:360px; background:#1b1f27; border:1px solid #2c323d; border-radius:6px; padding:28px 26px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
+      <svg width="30" height="30" viewBox="0 0 48 48" style="flex-shrink:0;">
+        <rect x="9" y="9" width="30" height="30" rx="4" transform="rotate(45 24 24)" fill="#1b1f27" stroke="#c9974b" stroke-width="2"/>
+        <path d="M15,17 L33,17 L40,24 L24,40 L8,24 Z" fill="#c9974b"/>
+        <path d="M15,17 L24,40 M33,17 L24,40 M8,24 L40,24" stroke="#12141a" stroke-width="1.5" fill="none"/>
+      </svg>
+      <div class="display" style="font-size:17px; text-transform:uppercase; color:#edeff3;">Sellamade</div>
+    </div>
+    <p style="font-size:12.5px; color:#8991a3; margin-bottom:18px; line-height:1.5;">Sign in to sync your progress to your private database. Nobody else can see your data.</p>
+    <div class="field" style="margin-bottom:12px;"><label>Email</label><input type="email" id="authEmail" placeholder="you@example.com"></div>
+    <div class="field" style="margin-bottom:16px;"><label>Password</label><input type="password" id="authPassword" placeholder="••••••••"></div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-primary" id="authSignIn" style="flex:1;">Sign In</button>
+      <button class="btn-ghost" id="authSignUp" style="flex:1;">Create Account</button>
+    </div>
+    <p id="authStatus" style="font-size:12px; color:#e2542a; margin-top:14px; min-height:16px;"></p>
+  </div>
+</div>
+
+<header class="console">
+  <div class="console-top">
+    <div class="brand-block">
+      <svg width="40" height="40" viewBox="0 0 48 48" style="flex-shrink:0;">
+        <rect x="9" y="9" width="30" height="30" rx="4" transform="rotate(45 24 24)" fill="var(--panel-raised)" stroke="var(--brass)" stroke-width="2"/>
+        <path d="M15,17 L33,17 L40,24 L24,40 L8,24 Z" fill="var(--brass)"/>
+        <path d="M15,17 L24,40 M33,17 L24,40 M8,24 L40,24" stroke="var(--bg)" stroke-width="1.5" fill="none"/>
+      </svg>
+      <div>
+        <div class="brand-title display">Sellamade</div>
+        <div class="brand-sub">Elite Sales Operating System</div>
+      </div>
+    </div>
+    <div class="callsign-wrap">
+      OPERATOR
+      <input id="callsignInput" type="text" placeholder="YOUR NAME" maxlength="24">
+      <span id="storageBadge" class="storage-badge" title="">SAVING…</span>
+      <button class="btn-ghost" id="signOutBtn" style="display:none;">Sign Out</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-view="dashboard" class="active">Dashboard</button>
+    <button data-view="roadmap">12-Month Roadmap</button>
+    <button data-view="first90">First 90 Days</button>
+    <button data-view="journal">Daily Journal</button>
+    <button data-view="routines">Routines</button>
+    <button data-view="roleplay">Roleplay Range</button>
+    <button data-view="objections">Objection Drills</button>
+    <button data-view="callreview">Call Review</button>
+    <button data-view="books">Book Curriculum</button>
+    <button data-view="kpis">KPI Dashboard</button>
+    <button data-view="scoreboard">Scoreboard</button>
+    <button data-view="levels">Competency Levels</button>
+    <button data-view="playbook">Strategy Playbook</button>
+    <button data-view="habits">Habits</button>
+    <button data-view="rules">Field Rules</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= DASHBOARD ================= -->
+  <div class="view active" id="view-dashboard">
+    <div class="dash-grid">
+      <section class="panel gauge-wrap">
+        <svg class="gauge-figure" viewBox="0 0 220 220">
+          <circle cx="110" cy="110" r="92" fill="none" stroke="#2c323d" stroke-width="12"/>
+          <circle id="gaugeArc" cx="110" cy="110" r="92" fill="none" stroke="#c9974b" stroke-width="12"
+            stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 110 110)"/>
+        </svg>
+        <div class="gauge-label" style="margin-top:-220px; width:220px;">
+          <div class="gauge-pct" id="gaugePct">0%</div>
+          <div class="gauge-caption">Overall Readiness</div>
+        </div>
+        <div style="height:14px;"></div>
+        <div class="day-counter">
+          <div class="n" id="dayCount">DAY 001</div>
+          <div class="l">Since campaign start</div>
+        </div>
+      </section>
+
+      <div>
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="stat-num" id="statMonth">1<small>/12</small></div>
+            <div class="stat-lbl">Current Month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="statBooks">0<small>/19</small></div>
+            <div class="stat-lbl">Books Finished</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="statRoleplay">0<small>/50</small></div>
+            <div class="stat-lbl">Scenarios Logged</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="statStreak">0<small> day</small></div>
+            <div class="stat-lbl">Journal Streak</div>
+          </div>
+        </div>
+
+        <section class="panel" style="margin-bottom:0;">
+          <div class="panel-head">
+            <div class="panel-title display">This Month's Focus</div>
+            <select id="monthSelector"></select>
+          </div>
+          <div id="monthGoalText" class="eyebrow" style="color:var(--muted); text-transform:none; letter-spacing:0; font-size:13px; margin-bottom:14px;"></div>
+          <div id="dashFocusList"></div>
+        </section>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Competency Level</div>
+        <span class="panel-tag" id="levelTag">Level 1 — Foundation</span>
+      </div>
+      <div class="level-track" id="levelTrack"></div>
+      <p style="font-size:12.5px; color:var(--muted); margin-top:10px;">Derived from your most recent monthly scoreboard total. Log a scoreboard entry to calibrate.</p>
+    </section>
+  </div>
+
+  <!-- ================= FIRST 90 DAYS ================= -->
+  <div class="view" id="view-first90">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">First 30 Days — Week 1 Daily Plan</div>
+        <span class="panel-tag" id="week1Tag">0/7 days logged</span>
+      </div>
+      <div id="week1Container"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div class="panel-title display">Weeks 2–4 Focus</div></div>
+      <div id="weeks234Container"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">90-Day Milestones</div>
+        <span class="panel-tag" id="milestoneTag">0/0 hit</span>
+      </div>
+      <div id="milestonesContainer"></div>
+    </section>
+  </div>
+
+  <!-- ================= ROADMAP (existing) ================= -->
+  <div class="view" id="view-roadmap">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">12-Month Roadmap</div>
+        <span class="panel-tag">Tap a month to open its checklist</span>
+      </div>
+      <div id="monthsContainer"></div>
+    </section>
+  </div>
+
+  <!-- ================= ROUTINES ================= -->
+  <div class="view" id="view-routines">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Daily Routine</div>
+        <select id="routineVersion">
+          <option value="min">Minimum — 30 min/day</option>
+          <option value="std">Standard — 60 min/day</option>
+          <option value="serious">Serious — 90–120 min/day</option>
+        </select>
+      </div>
+      <table class="data-table" id="dailyRoutineTable"><thead><tr><th style="width:70px;">Time</th><th style="width:140px;">Activity</th><th>Details</th></tr></thead><tbody></tbody></table>
+    </section>
+    <div class="two-col">
+      <section class="panel">
+        <div class="panel-head"><div class="panel-title display">Weekly Routine</div><span class="panel-tag">3–7 hrs total</span></div>
+        <table class="data-table"><thead><tr><th style="width:70px;">Time</th><th style="width:140px;">Activity</th><th>Details</th></tr></thead><tbody id="weeklyRoutineBody"></tbody></table>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div class="panel-title display">Monthly Routine</div><span class="panel-tag">4–8 hrs total</span></div>
+        <table class="data-table"><thead><tr><th style="width:70px;">Time</th><th style="width:140px;">Activity</th><th>Details</th></tr></thead><tbody id="monthlyRoutineBody"></tbody></table>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= JOURNAL (existing) ================= -->
+  <div class="view" id="view-journal">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Daily Sales Journal</div>
+        <span class="panel-tag">One entry per day builds the streak</span>
+      </div>
+      <div class="journal-form">
+        <div class="field"><label>Calls / conversations made</label><input type="number" id="jCalls" min="0" placeholder="0"></div>
+        <div class="field"><label>Meetings booked</label><input type="number" id="jMeetings" min="0" placeholder="0"></div>
+        <div class="field full"><label>What went well</label><textarea id="jGood" placeholder="Best moment or question today..."></textarea></div>
+        <div class="field full"><label>What went badly / where you lost control</label><textarea id="jBad" placeholder="What tripped you up..."></textarea></div>
+        <div class="field full"><label>Objection or obstacle you struggled with</label><input type="text" id="jObjection" placeholder="e.g. &quot;need to think about it&quot;"></div>
+        <div class="field full"><label>Tomorrow's practice focus</label><input type="text" id="jFocus" placeholder="One specific thing to drill"></div>
+      </div>
+      <button class="btn-primary" id="jSubmit">Log Today's Entry</button>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Entry History</div>
+        <span class="panel-tag" id="entryCount">0 entries</span>
+      </div>
+      <div id="journalList"></div>
+    </section>
+  </div>
+
+  <!-- ================= OBJECTIONS ================= -->
+  <div class="view" id="view-objections">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Objection Drills</div>
+        <span class="panel-tag">Source doc details 3 of the 14 referenced objections in full — framework below applies to any objection you hit</span>
+      </div>
+      <div class="rule-quote" style="margin-bottom:18px;">Before responding to any objection, diagnose: (1) What's the surface objection? (2) What's the real concern? (3) Is this a "no" or a "not yet"? (4) Price concern or value concern? (5) Real objection or smokescreen? (6) What would need to be true for it to disappear?</div>
+      <div id="objectionsContainer"></div>
+    </section>
+  </div>
+
+  <!-- ================= CALL REVIEW ================= -->
+  <div class="view" id="view-callreview">
+    <div class="two-col">
+      <section class="panel">
+        <div class="panel-head"><div class="panel-title display">Score a Call (170-pt)</div></div>
+        <div class="field" style="margin-bottom:16px;"><label>Which call is this?</label><input type="text" id="crLabel" placeholder="e.g. Acme Corp — discovery call"></div>
+        <div class="sb-grid" id="crInputs"></div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
+          <div class="eyebrow" style="color:var(--muted); text-transform:none; letter-spacing:0;">Total: <b class="mono" id="crTotal" style="color:var(--brass);">0</b>/170</div>
+          <button class="btn-primary" id="crSubmit">Save Review</button>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div class="panel-title display">Review History</div></div>
+        <svg id="crSparkline" viewBox="0 0 400 120" style="width:100%; height:120px; margin-bottom:10px;"></svg>
+        <div id="crHistoryList"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= ROLEPLAY (existing) ================= -->
+  <div class="view" id="view-roleplay">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Roleplay Range — 50 Scenarios</div>
+        <span class="panel-tag" id="roleplayProgressTag">0/50 logged</span>
+      </div>
+      <div class="filter-row">
+        <select id="rpFilter">
+          <option value="all">All levels</option>
+          <option value="1">Level 1 — Easy (1–10)</option>
+          <option value="2">Level 2 — Moderate (11–25)</option>
+          <option value="3">Level 3 — Hard (26–40)</option>
+          <option value="4">Level 4 — Expert (41–50)</option>
+        </select>
+        <span style="font-size:12px; color:var(--muted);">Check off completed reps. Log your best score (0–100) per scenario.</span>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th style="width:36px;">#</th>
+          <th style="width:70px;">Level</th>
+          <th>Scenario</th>
+          <th>Buyer Persona</th>
+          <th style="width:90px;">Difficulty</th>
+          <th style="width:50px;">Done</th>
+          <th style="width:70px;">Score</th>
+        </tr></thead>
+        <tbody id="roleplayBody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- ================= KPI DASHBOARD ================= -->
+  <div class="view" id="view-kpis">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Activity Metrics</div>
+        <span class="panel-tag">Leading indicators — Months 1–4 focus</span>
+      </div>
+      <table class="data-table"><thead><tr><th>Metric</th><th>Why It Matters</th><th style="width:110px;">Target</th><th style="width:110px;">Your Current</th></tr></thead><tbody id="kpiActivityBody"></tbody></table>
+    </section>
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Pipeline Metrics</div>
+        <span class="panel-tag">Mid indicators — Months 5–8 focus</span>
+      </div>
+      <table class="data-table"><thead><tr><th>Metric</th><th>Why It Matters</th><th style="width:110px;">Target</th><th style="width:110px;">Your Current</th></tr></thead><tbody id="kpiPipelineBody"></tbody></table>
+    </section>
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Results Metrics</div>
+        <span class="panel-tag">Lagging indicators — Months 9–12 focus</span>
+      </div>
+      <table class="data-table"><thead><tr><th>Metric</th><th>Why It Matters</th><th style="width:110px;">Target</th><th style="width:110px;">Your Current</th></tr></thead><tbody id="kpiResultsBody"></tbody></table>
+    </section>
+  </div>
+
+  <!-- ================= BOOKS (existing) ================= -->
+  <div class="view" id="view-books">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Book Curriculum</div>
+        <span class="panel-tag" id="bookProgressTag">0/19 finished</span>
+      </div>
+      <table class="data-table">
+        <thead><tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th style="width:80px;">Tier</th>
+          <th style="width:150px;">Status</th>
+        </tr></thead>
+        <tbody id="booksBody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- ================= SCOREBOARD ================= -->
+  <div class="view" id="view-scoreboard">
+    <div class="two-col">
+      <section class="panel">
+        <div class="panel-head"><div class="panel-title display">Log Monthly Scoreboard</div></div>
+        <div class="field" style="margin-bottom:16px;"><label>Label this entry (e.g. "Month 3")</label><input type="text" id="sbLabel" placeholder="Month 1"></div>
+        <div class="sb-grid" id="sbInputs"></div>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:6px;">
+          <div class="eyebrow" style="color:var(--muted); text-transform:none; letter-spacing:0;">Total: <b class="mono" id="sbTotal" style="color:var(--brass);">0</b>/100</div>
+          <button class="btn-primary" id="sbSubmit">Save Score</button>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div class="panel-title display">Score History</div></div>
+        <svg id="sbSparkline" viewBox="0 0 400 120" style="width:100%; height:120px; margin-bottom:10px;"></svg>
+        <div id="sbHistoryList"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ================= COMPETENCY LEVELS ================= -->
+  <div class="view" id="view-levels">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Competency Levels 1–5</div>
+        <span class="panel-tag">Your live level (top of Dashboard) is set by your latest Scoreboard total</span>
+      </div>
+      <div id="levelsContainer"></div>
+    </section>
+  </div>
+
+  <!-- ================= STRATEGY PLAYBOOK ================= -->
+  <div class="view" id="view-playbook">
+    <section class="panel">
+      <div class="panel-head"><div class="panel-title display">Buyer Psychology</div></div>
+      <div class="two-col">
+        <div>
+          <div class="check-col-title">Why People Buy</div>
+          <div id="psychDrivers"></div>
+        </div>
+        <div>
+          <div class="check-col-title">Why People Hesitate</div>
+          <div id="psychHesitations"></div>
+        </div>
+      </div>
+      <div class="check-col-title" style="margin-top:20px;">How Decisions Actually Happen</div>
+      <div id="psychDecision"></div>
+      <div class="check-col-title" style="margin-top:20px;">Differences by Segment</div>
+      <table class="data-table"><thead><tr><th>Segment</th><th>Decision Process</th><th>Key Drivers</th><th>Key Objections</th><th>How to Sell</th></tr></thead><tbody id="psychSegmentBody"></tbody></table>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div class="panel-title display">Career Roadmap</div></div>
+      <table class="data-table"><thead><tr><th>Stage</th><th style="width:90px;">Experience</th><th>Responsibilities</th><th>Compensation</th><th>Mistakes to Avoid</th></tr></thead><tbody id="careerBody"></tbody></table>
+      <div class="check-col-title" style="margin-top:18px;">How to Become Promotable</div>
+      <div id="promotableList"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div class="panel-title display">High-Ticket Industry Comparison</div></div>
+      <table class="data-table"><thead><tr><th>Industry</th><th>Earning</th><th>Difficulty</th><th>Demand</th><th>Growth</th><th>Remote</th><th>Stability</th><th>Entry Barrier</th><th style="width:60px;">Total</th></tr></thead><tbody id="industryBody"></tbody></table>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div class="panel-title display">How to Get Real Experience</div></div>
+      <table class="data-table"><thead><tr><th>Method</th><th>Pros</th><th>Cons</th></tr></thead><tbody id="experienceBody"></tbody></table>
+      <div class="check-col-title" style="margin-top:18px; color:var(--signal);">Scams to Avoid</div>
+      <div id="scamsList"></div>
+    </section>
+  </div>
+
+  <!-- ================= HABITS ================= -->
+  <div class="view" id="view-habits">
+    <section class="panel">
+      <div class="panel-head"><div class="panel-title display">Elite Habits — Daily / Weekly / Monthly / Quarterly</div></div>
+      <div class="two-col">
+        <div><div class="check-col-title">Daily (Non-Negotiable)</div><div id="habitsDaily"></div></div>
+        <div><div class="check-col-title">Weekly</div><div id="habitsWeekly"></div></div>
+      </div>
+      <div class="two-col" style="margin-top:16px;">
+        <div><div class="check-col-title">Monthly</div><div id="habitsMonthly"></div></div>
+        <div><div class="check-col-title">Quarterly</div><div id="habitsQuarterly"></div></div>
+      </div>
+      <div class="two-col" style="margin-top:16px;">
+        <div><div class="check-col-title" style="color:var(--success);">Actually Matter</div><div id="habitsMatter"></div></div>
+        <div><div class="check-col-title" style="color:var(--signal);">Productivity Theater</div><div id="habitsTheater"></div></div>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Anti-Habits to Eliminate</div>
+        <span class="panel-tag" id="antiHabitTag">0/18 eliminated</span>
+      </div>
+      <div id="antiHabitsContainer"></div>
+    </section>
+  </div>
+
+  <!-- ================= RULES (existing) ================= -->
+  <div class="view" id="view-rules">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">50 Rules of Elite Sales</div>
+        <span class="panel-tag">Field reference — no tracking needed, just discipline</span>
+      </div>
+      <div id="rulesList" style="columns:1; column-gap:32px;"></div>
+    </section>
+  </div>
+
+</main>
+
+<footer>SELLAMADE · PROGRESS SAVES AUTOMATICALLY TO YOUR ACCOUNT</footer>
+
+<script>
+/* ========================= DATA ========================= */
+const MONTHS = [
+{n:1,name:"Foundation Building",goal:"Master the fundamentals of consultative selling and build strong habits.",
+ skills:["Active listening","Basic discovery questions","Communication clarity","Rapport building","Sales process understanding"],
+ books:["SPIN Selling","How to Win Friends and Influence People"],
+ kpis:["10 practice discovery calls","5 recorded roleplays","3 book chapters read","Discovery question bank built (20+ questions)"],
+ tests:["Roleplay a discovery call and score 70%+ on discovery depth","Write out your company's value proposition in 30 seconds"],
+ grad:["Can ask SPIN questions naturally","Can maintain a consultative conversation without pitching","Understands the difference between surface problems and deep pain"]},
+{n:2,name:"Communication Mastery",goal:"Develop elite-level communication skills — listening, questioning, tone, and executive presence.",
+ skills:["Active listening (advanced)","Questioning technique","Tone and pace control","Concise communication","Executive communication basics"],
+ books:["SPIN Selling","New Sales. Simplified."],
+ kpis:["5 recorded practice calls","3 call analyses completed","Zero verbal fillers in recorded calls","Can summarize a complex situation in 30 seconds"],
+ tests:["Record a 10-minute discovery call and score 80%+ on listening and questioning","Summarize a complex business problem in 30 seconds"],
+ grad:["Demonstrates active listening (reflects, clarifies, asks follow-ups)","Communicates concisely and clearly","Maintains confident, consultative tone"]},
+{n:3,name:"Deep Discovery",goal:"Master the art of uncovering deep pain, business impact, and personal motivations.",
+ skills:["SPIN questioning mastery","Implication questions","Need-payoff questions","Business impact discovery","Personal motivation discovery"],
+ books:["Gap Selling","Crucial Conversations"],
+ kpis:["5 deep discovery roleplays","20 implication questions written","20 need-payoff questions written","Discovery question map created"],
+ tests:["Roleplay a discovery call and score 80%+ on discovery depth","Given a surface problem, identify 3 implications and 3 business impacts"],
+ grad:["Consistently uncovers deep pain","Can articulate business impact of problems","Understands personal motivations of buyers"]},
+{n:4,name:"Qualification Mastery",goal:"Learn to qualify ruthlessly — identifying real opportunities and walking away from bad ones.",
+ skills:["BANT qualification","MEDDIC qualification","Decision process mapping","Risk identification","Opportunity scoring"],
+ books:["The Qualified Sales Leader","Gap Selling"],
+ kpis:["Qualification checklist created","All pipeline deals scored","3 deals disqualified","Decision process mapped for 5 deals"],
+ tests:["Given a prospect scenario, determine if it's a qualified opportunity (80% accuracy)","Create a MEDDIC assessment for a deal (90% completeness)"],
+ grad:["Consistently qualifies opportunities correctly","Walks away from bad deals","Understands decision processes and stakeholders"]},
+{n:5,name:"Objection Handling Mastery",goal:"Master objection diagnosis and response — moving from reactive to proactive.",
+ skills:["Objection diagnosis","Questioning to uncover real objections","Reframing objections","Handling price objections","Handling timing objections","Handling authority objections"],
+ books:["The Challenger Sale","The Qualified Sales Leader"],
+ kpis:["50 objections practiced","10 objection responses recorded","Objection playbook created","5 real objections diagnosed correctly"],
+ tests:["Given 10 objections, diagnose the underlying concern and provide effective responses (80% score)","Roleplay handling objections without becoming defensive (90% score)"],
+ grad:["Handles objections calmly and confidently","Diagnoses before responding","Maintains control during difficult conversations"]},
+{n:6,name:"Closing Mastery",goal:"Master closing techniques and understand when and how to ask for commitment.",
+ skills:["Trial closes","Summary closes","Assumptive closes","Direct closes","Next-step closes","Enterprise closing"],
+ books:["The Challenger Sale","Storyworthy"],
+ kpis:["20 closing roleplays","10 closing recordings","Closing flow created","5 trial closes attempted in real conversations"],
+ tests:["Roleplay a full sales conversation from discovery to close (80% score)","Given a scenario, choose the appropriate closing technique (90% accuracy)"],
+ grad:["Closes confidently and appropriately","Uses multiple closing techniques","Knows when not to close"]},
+{n:7,name:"Negotiation Mastery",goal:"Develop sophisticated negotiation skills — understanding value, leverage, and trade-offs.",
+ skills:["BATNA","ZOPA","Anchoring","Concessions","Leverage","Trade-offs","Package negotiation"],
+ books:["Never Split the Difference","Bargaining for Advantage"],
+ kpis:["20 negotiation roleplays","10 negotiation recordings","Negotiation template created","3 real negotiations documented"],
+ tests:["Roleplay a negotiation and achieve favorable terms (80% score)","Given a scenario, identify BATNA, ZOPA, and leverage (90% accuracy)"],
+ grad:["Negotiates confidently without discounting","Understands and uses leverage","Maintains relationships while negotiating"]},
+{n:8,name:"Prospecting & Pipeline",goal:"Build a consistent, predictable prospecting system.",
+ skills:["Cold calling","Cold email","LinkedIn prospecting","Referral generation","Pipeline management","Follow-up systems"],
+ books:["Fanatical Prospecting","Never Split the Difference"],
+ kpis:["50 cold calls (practice or real)","25 cold emails","25 LinkedIn outreach messages","Prospecting system created","Follow-up cadence implemented"],
+ tests:["Roleplay a cold call and score 80%+ on opening, value, and next steps","Given a target market, create a prospecting plan (90% completeness)"],
+ grad:["Consistently prospects without fear","Has a repeatable prospecting system","Maintains a healthy pipeline"]},
+{n:9,name:"B2B / Enterprise Sales",goal:"Master complex, multi-stakeholder enterprise sales.",
+ skills:["Multi-stakeholder management","Enterprise buying process navigation","Executive relationship building","Account planning","Deal orchestration","Political navigation"],
+ books:["Fanatical Prospecting","Pre-Suasion"],
+ kpis:["5 account plans created","10 executive roleplays","5 stakeholder maps created","3 enterprise deal studies completed"],
+ tests:["Roleplay an executive conversation and score 80%+ on executive presence","Given an enterprise scenario, create a stakeholder map and account plan (90% completeness)"],
+ grad:["Comfortable communicating with executives","Understands enterprise buying dynamics","Can navigate multi-stakeholder deals"]},
+{n:10,name:"Advanced Persuasion",goal:"Master advanced persuasion and influence techniques ethically.",
+ skills:["Pre-suasion","Framing","Anchoring","Social proof","Authority","Loss aversion","Storytelling","Status and identity"],
+ books:["Pre-Suasion","Thinking, Fast and Slow"],
+ kpis:["20 persuasion roleplays","10 persuasive stories crafted","Persuasion playbook created","5 persuasion techniques applied in real conversations"],
+ tests:["Roleplay a persuasive conversation and score 80%+ on ethical persuasion","Given a scenario, identify appropriate persuasion techniques (90% accuracy)"],
+ grad:["Uses persuasion ethically and effectively","Understands when persuasion is appropriate","Can craft compelling narratives"]},
+{n:11,name:"Advanced Deal Strategy",goal:"Develop strategic thinking for complex deals.",
+ skills:["Deal crafting","Competitive strategy","Alliance building","Risk management","Strategic negotiation","Deal orchestration","Multi-threaded selling"],
+ books:["Thinking, Fast and Slow","Bargaining for Advantage"],
+ kpis:["5 deal strategies created","3 competitive battle cards","5 political maps","10 strategic roleplays"],
+ tests:["Given a complex deal scenario, create a comprehensive deal strategy (90% completeness)","Roleplay a strategic conversation with a key stakeholder (85% score)"],
+ grad:["Thinks strategically about deals","Understands competitive dynamics","Can orchestrate complex deals"]},
+{n:12,name:"Elite Salesperson Development",goal:"Integrate all skills and develop elite-level consistency and mastery.",
+ skills:["Integration of all previous skills","Emotional mastery","Consistency","Coaching others","Continuous improvement","Thought leadership"],
+ books:["Predictably Irrational"],
+ kpis:["10 full-cycle roleplays","5 peer coaching sessions","10 call reviews","Personal sales methodology documented"],
+ tests:["Complete a full sales cycle roleplay (90% score)","Coach a junior salesperson effectively (85% score)","Present your sales methodology (90% completeness)"],
+ grad:["Demonstrates mastery of all skills","Consistently performs at a high level","Can teach others","Has a personal sales methodology"]}
+];
+
+const BOOKS = [
+ {id:"b1",title:"SPIN Selling",author:"Neil Rackham",tier:1},
+ {id:"b2",title:"The Qualified Sales Leader",author:"John McMahon",tier:1},
+ {id:"b3",title:"Gap Selling",author:"Keenan",tier:1},
+ {id:"b4",title:"The Challenger Sale",author:"Dixon & Adamson",tier:1},
+ {id:"b5",title:"Never Split the Difference",author:"Chris Voss",tier:1},
+ {id:"b6",title:"Influence",author:"Robert Cialdini",tier:1},
+ {id:"b7",title:"Fanatical Prospecting",author:"Jeb Blount",tier:2},
+ {id:"b8",title:"New Sales. Simplified.",author:"Mike Weinberg",tier:2},
+ {id:"b9",title:"Crucial Conversations",author:"Patterson, Grenny, McMillan, Switzler",tier:2},
+ {id:"b10",title:"Bargaining for Advantage",author:"G. Richard Shell",tier:2},
+ {id:"b11",title:"How to Win Friends and Influence People",author:"Dale Carnegie",tier:2},
+ {id:"b12",title:"Pre-Suasion",author:"Robert Cialdini",tier:2},
+ {id:"b13",title:"Thinking, Fast and Slow",author:"Daniel Kahneman",tier:2},
+ {id:"b14",title:"The Psychology of Selling",author:"Brian Tracy",tier:3},
+ {id:"b15",title:"Secrets of Closing the Sale",author:"Zig Ziglar",tier:3},
+ {id:"b16",title:"Predictably Irrational",author:"Dan Ariely",tier:3},
+ {id:"b17",title:"Storyworthy",author:"Matthew Dicks",tier:3},
+ {id:"b18",title:"Getting to Yes",author:"Fisher & Ury",tier:3},
+ {id:"b19",title:"MEDDIC",author:"Various",tier:3}
+];
+
+const ROLEPLAY = [
+[1,1,"Curious prospect","Small business owner",1],[2,1,"Friendly prospect","Mid-level manager",2],
+[3,1,"Budget-conscious prospect","Small business owner",2],[4,1,"Time-pressed prospect","Busy executive",2],
+[5,1,"Skeptical prospect","Purchasing manager",3],[6,1,"Comparison shopper","Operations manager",3],
+[7,1,"Overwhelmed prospect","Small business owner",3],[8,1,"Referral prospect","Mid-level manager",2],
+[9,1,"Early-stage prospect","Startup founder",2],[10,1,"Happy-with-current prospect","Operations manager",3],
+[11,2,"Price-sensitive buyer","CFO",4],[12,2,"Indecisive buyer","Mid-level manager",4],
+[13,2,"Need-to-talk-to-boss","Department head",4],[14,2,"Bad-timing prospect","Operations manager",4],
+[15,2,"No-budget prospect","Department manager",5],[16,2,"Competitor-cheaper prospect","Procurement manager",4],
+[17,2,"Try-before-buy prospect","IT manager",5],[18,2,"Info-collector prospect","Analyst",5],
+[19,2,"Past-failure prospect","VP of Operations",5],[20,2,"Angry prospect","Department head",5],
+[21,2,"Multi-stakeholder deal","Evaluation committee",6],[22,2,"Procurement negotiation","Procurement specialist",5],
+[23,2,"Busy executive","CEO",5],[24,2,"Skeptical CFO","CFO",6],
+[25,2,"Internal champion","Department manager",5],[26,3,"Hostile procurement","Procurement VP",7],
+[27,3,"Competing internal interests","Two VPs",7],[28,3,"Silent stakeholder","Unknown",7],
+[29,3,"Budget freeze","CFO",7],[30,3,"Competitor incumbent","Existing vendor",7],
+[31,3,"Complex procurement process","Enterprise procurement",7],[32,3,"Global stakeholder deal","Multinational team",8],
+[33,3,"Merger integration","Post-merger team",8],[34,3,"Board-level decision","Board of directors",8],
+[35,3,"Legal/compliance hurdle","Legal department",7],[36,3,"Competitor undercutting","Competitor",7],
+[37,3,"Change management resistance","Operations team",8],[38,3,"Multi-year contract negotiation","Enterprise buyer",8],
+[39,3,"Strategic partnership discussion","SVP of Strategy",8],[40,3,"High-stakes negotiation","CEO + CFO",8],
+[41,4,"Hostile negotiation with leverage","Procurement VP",9],[42,4,"Political minefield","Multiple stakeholders",9],
+[43,4,"Competitor with incumbent advantage","Incumbent vendor",9],[44,4,"Board-level crisis","Board of directors",9],
+[45,4,"Multi-national negotiation","Global procurement",9],[46,4,"Competitor with better technology","CTO",9],
+[47,4,"Deal with unreasonable demands","Enterprise buyer",9],[48,4,"Multi-year, multi-million deal","Enterprise CEO",10],
+[49,4,"Turnaround situation","Company in crisis",9],[50,4,"Ultimate enterprise deal","Fortune 500 board",10]
+].map(r=>({id:r[0],level:r[1],name:r[2],persona:r[3],diff:r[4]}));
+
+const SCORE_CATS = ["Skill score","Knowledge score","Call performance","Close rate","Pipeline performance","Communication","Negotiation","Objection handling","Confidence","Consistency"];
+
+const RULES = [
+"Never pitch before understanding the problem.","Don't confuse interest with intent.","Don't chase prospects who don't have a problem.",
+"Never discount before understanding the objection.","The goal isn't to convince everyone.","Control the process, not the buyer.",
+"Ask better questions, get better answers.","Listen twice as much as you talk.","Qualify ruthlessly — walk away from bad deals.",
+"Follow up consistently — most deals require multiple touches.","Never negotiate against yourself.","Always trade concessions — if you give something, get something.",
+"Speak to the decision-maker, not just the influencer.","Understand the buyer's personal motivations.","Quantify the cost of the problem.",
+"Connect your solution to their specific pain.","Build trust through competence, not just friendliness.","Be a business consultant, not just a salesperson.",
+"Never lie or exaggerate — your reputation is everything.","Prepare for every call, no matter how small.","Review every call, no matter how routine.",
+"Practice deliberately, not just repeatedly.","Get feedback from others, not just yourself.","Track your metrics, not just your feelings.",
+"Focus on quality opportunities, not just quantity.","Don't be needy — approach from a position of strength.","Embrace rejection — it's information, not failure.",
+"Never argue with a prospect — acknowledge and redirect.","Ask for commitment directly, not sheepishly.","Handle objections before they arise.",
+"Use silence effectively — don't fill every pause.","Communicate value in business terms, not features.","Understand the competitive landscape.",
+"Know when to walk away from a deal.","Build relationships, not transactions.","Help the buyer buy, don't sell to them.",
+"Create urgency through value, not pressure.","Never badmouth a competitor — differentiate instead.","Follow up with a purpose, not just to check in.",
+"Document everything — your future self will thank you.","Learn from every deal, won or lost.","Stay curious — the best salespeople are lifelong learners.",
+"Take care of yourself — burnout kills performance.","Be honest about what you don't know.","Respect the buyer's time — be concise and prepared.",
+"Don't confuse activity with progress.","Build a personal brand — people buy from people they trust.","Always be prospecting, even when busy closing.",
+"Communicate clearly — avoid jargon and buzzwords.","Remember that you're creating value — act like it."
+];
+
+/* ---- First 30/90 Days ---- */
+const WEEK1_DAYS = [
+ {d:1,tasks:["Read SPIN Selling (Ch 1–2)","Practice basic discovery questions (30 min)","Record yourself asking 10 discovery questions","Review and self-critique"]},
+ {d:2,tasks:["Read SPIN Selling (Ch 3)","Practice Situation questions (30 min)","Record yourself asking Situation questions","Review and self-critique"]},
+ {d:3,tasks:["Read SPIN Selling (Ch 4)","Practice Problem questions (30 min)","Record yourself asking Problem questions","Review and self-critique"]},
+ {d:4,tasks:["Read SPIN Selling (Ch 5)","Practice Implication questions (30 min)","Record yourself asking Implication questions","Review and self-critique"]},
+ {d:5,tasks:["Read SPIN Selling (Ch 6)","Practice Need-payoff questions (30 min)","Record yourself asking Need-payoff questions","Review and self-critique"]},
+ {d:6,tasks:["Read How to Win Friends and Influence People (Part 1)","Practice active listening (30 min)","Roleplay a full SPIN conversation","Record and review"]},
+ {d:7,tasks:["Review the week's learning","Complete daily journal entries","Set goals for next week","Rest and reflect"]}
+];
+const WEEKS234 = [
+ {w:"Week 2 — Discovery Practice",focus:"Asking natural, conversational SPIN questions",routine:["Read 30 min (SPIN Selling)","Practice SPIN questions (15 min)","Roleplay discovery call (15 min)","Record and review (10 min)","Journal (5 min)"]},
+ {w:"Week 3 — Qualification Practice",focus:"Identifying qualified opportunities",routine:["Read 30 min (SPIN Selling)","Practice qualification questions (15 min)","Roleplay qualification conversation (15 min)","Record and review (10 min)","Journal (5 min)"]},
+ {w:"Week 4 — Integration",focus:"Integrating discovery and qualification",routine:["Review SPIN concepts (15 min)","Roleplay full discovery call (30 min)","Record and review (15 min)","Practice qualification (10 min)","Journal (5 min)"]}
+];
+const MILESTONES_90 = [
+ {month:"End of Month 1",items:["Completed SPIN Selling and How to Win Friends","20+ recorded practice calls","Discovery question bank built","Basic qualification skills","Can run a basic discovery call","70%+ on discovery roleplay","10+ roleplays completed"]},
+ {month:"End of Month 2",items:["Completed New Sales. Simplified.","Advanced communication skills","Executive communication basics","Can summarize complex situations concisely","80%+ on communication assessment","15+ recorded practice calls"]},
+ {month:"End of Month 3",items:["Completed Gap Selling","Deep discovery skills","Can uncover business impact","Understands personal motivations","80%+ on discovery depth assessment","20+ deep discovery roleplays","Discovery question map created"]},
+ {month:"End of Month 4",items:["Completed The Qualified Sales Leader","Qualification mastery (BANT/MEDDIC)","Can identify and walk away from bad deals","Understands decision processes","80%+ on qualification assessment","All pipeline deals scored","3+ deals disqualified"]}
+];
+
+/* ---- Routines ---- */
+const DAILY_ROUTINES = {
+ min:[["5 min","Reading","Read a sales book or article"],["10 min","Drill","Practice one specific skill (discovery questions, objections, etc.)"],["5 min","Recording","Record yourself practicing"],["5 min","Review","Listen to your recording and self-critique"],["5 min","Reflection","Journal about what you learned and what to improve"]],
+ std:[["10 min","Reading","Read a sales book or article"],["15 min","Drill","Practice two specific skills"],["10 min","Recording","Record yourself practicing"],["5 min","Review","Listen to your recording and self-critique"],["5 min","Roleplay","Practice a scenario (even solo)"],["10 min","Pipeline review","Review your current deals and identify next actions"],["5 min","Reflection","Journal about what you learned"]],
+ serious:[["15 min","Reading","Read a sales book or article"],["20 min","Drill","Practice multiple skills (discovery, objections, closing)"],["15 min","Recording","Record yourself practicing"],["10 min","Review","Listen to your recording and self-critique"],["15 min","Roleplay","Practice scenarios with a partner or AI"],["15 min","Call analysis","Analyze a recorded sales call"],["10 min","Pipeline review","Review deals and identify next actions"],["10 min","Prospecting practice","Write cold emails or practice cold calls"],["10 min","Reflection","Journal about what you learned"],["5 min","Mental preparation","Visualization or mindset practice"]]
+};
+const WEEKLY_ROUTINE = [["1 hour","Roleplay","Practice scenarios with a partner or coach"],["1 hour","Call review","Analyze your own calls or study public sales calls"],["1 hour","Prospecting practice","Make practice cold calls, write emails"],["30 min","Reading","Continue sales education"],["30 min","Pipeline review","Review all active deals"],["30 min","Goal setting","Set goals for the coming week"],["30 min","Reflection","Review progress and identify improvement areas"]];
+const MONTHLY_ROUTINE = [["1 hour","Skill assessment","Score yourself on the competency framework"],["1 hour","Deep roleplay","Practice complex scenarios"],["1 hour","Book completion","Finish reading a book and extract key lessons"],["1 hour","Pipeline review","Comprehensive pipeline analysis"],["1 hour","Goal review","Review monthly goals and set new ones"],["30 min","Call review","Analyze calls for patterns"],["30 min","Reflection","Review journal entries and identify themes"]];
+
+/* ---- Objections (3 fully detailed in source doc) ---- */
+const OBJECTIONS = [
+ {title:'"Too Expensive"', means:["I don't see the value","I don't have the budget","I'm comparing to something cheaper","I want a discount","I don't believe this will solve my problem"],
+  avoid:["\"Well, we can offer a discount...\" (immediate discount)","\"Other customers don't think it's expensive\" (invalidating)","\"It's actually very reasonable\" (arguing)"],
+  ask:["Too expensive compared to what?","What were you expecting to invest?","Is this a budget constraint or a value concern?","If the price were the same as [competitor], would you move forward today?","What's the cost of not solving this problem?"],
+  example:"I appreciate you sharing that. Many buyers start with that concern. Help me understand — when you say 'too expensive,' are you comparing to another solution, or is this more about budget allocation?"},
+ {title:'"Need to Think About It"', means:["I'm not convinced","I'm afraid to make a decision","I need to check with someone","I'm not interested but don't want to say no","I don't understand the value"],
+  avoid:["\"What's there to think about?\" (pressuring)","\"I'll follow up next week\" (passive)","\"OK, take your time\" (too passive)"],
+  ask:["What specifically would you like to think through?","What would you need to feel confident making a decision?","Is there anything I haven't addressed that's making you hesitate?","What's your timeline for making a decision?"],
+  example:"That makes sense. This is a significant decision. Help me understand — what are the key factors you'd like to think through?"},
+ {title:'"Need to Talk to My Boss"', means:["I don't have authority","I'm not convinced","I don't know how to sell this internally","I'm using this as an excuse","I need help presenting this to others"],
+  avoid:["\"Can I talk to your boss?\" (too aggressive)","\"Why didn't you tell me you're not the decision-maker?\" (blaming)","\"OK, let me know what they say\" (too passive)"],
+  ask:["What would your boss want to know?","How do you think they'll respond?","What would make it easy for you to present this?","Would it be helpful if we prepared something together?"],
+  example:"That's completely understandable. In complex decisions, multiple stakeholders are usually involved. What do you think your boss's key concerns might be?"}
+];
+
+/* ---- Call Scorecard (170 pt) ---- */
+const CALL_SCORECARD_CATS = ["Opening","Rapport","Agenda","Question quality","Listening","Discovery depth","Pain discovery","Business impact","Qualification","Value creation","Objection handling","Control","Tonality","Confidence","Clarity","Closing","Next steps"];
+
+/* ---- KPI Dashboard ---- */
+const KPI_ACTIVITY = [
+ ["Calls made","Indicates prospecting effort","20-50/day"],["Conversations","Indicates connect rate","25-50% of calls"],
+ ["Connect rate","Quality of list/timing","30-40%"],["Meetings booked","Prospecting effectiveness","10-20% of conversations"],
+ ["Show rate","Meeting quality","80-90%"],["Follow-up rate","Discipline","100%"]
+];
+const KPI_PIPELINE = [
+ ["Discovery-to-opportunity","Qualification effectiveness","30-50%"],["Opportunity-to-close","Closing effectiveness","20-40%"],
+ ["Close rate","Overall effectiveness","20-40%"],["Average deal size","Value of sales","Growing"],
+ ["Sales cycle","Efficiency","Shorter"],["Pipeline value","Future revenue","3-5x quota"],["Pipeline coverage","Pipeline health","3-5x"]
+];
+const KPI_RESULTS = [
+ ["Revenue","The bottom line","Quota"],["Win rate","Competitiveness","20-40%"],["Quota attainment","Performance","100%+"]
+];
+
+/* ---- Competency Levels 1-5 ---- */
+const LEVELS = [
+{n:1,name:"Foundation",skills:["Basic discovery","Active listening (basic)","Clear communication","Basic qualification","Follow-up discipline"],
+ can:["Have a basic discovery conversation","Qualify a lead","Present product information","Handle simple objections"],
+ weak:["Pitching too early","Poor discovery depth","Weak qualification","Fear of asking tough questions","Discounting too quickly"],
+ metrics:"Meets activity goals · Books some meetings · Close rate <10%",
+ next:"Deeper discovery, understanding business impact, handling objections without discounting, consistent follow-up"},
+{n:2,name:"Competent",skills:["Solid discovery (situation, problem, impact)","Good qualification","Objection handling (basic frameworks)","Closing (basic techniques)","Pipeline management"],
+ can:["Run a full sales cycle","Handle most objections","Close straightforward deals","Manage a pipeline"],
+ weak:["Inconsistent discovery depth","Weak qualification (chasing bad deals)","Over-reliance on a single closing technique","Poor at navigating complex buying processes","Weak negotiation skills"],
+ metrics:"Consistent meeting booking · 15-25% close rate · Growing pipeline",
+ next:"Multi-stakeholder management, advanced objection handling, strategic thinking, executive communication, consistent performance"},
+{n:3,name:"Strong",skills:["Deep discovery (consequences, motivations, decision process)","Strong qualification (BANT + Risk)","Advanced objection handling","Multiple closing techniques","Negotiation fundamentals","Executive communication"],
+ can:["Navigate complex buying processes","Handle enterprise objections","Negotiate without excessive discounting","Communicate with executives","Manage multi-stakeholder deals"],
+ weak:["Inconsistent executive communication","Occasional qualification failures","Limited negotiation sophistication","Still learning enterprise dynamics"],
+ metrics:"25-35% close rate · Shorter sales cycles · Larger average deal size · High win rate on qualified opps",
+ next:"Consistent executive-level communication, strategic account planning, advanced negotiation, political navigation, deal orchestration"},
+{n:4,name:"Advanced",skills:["Enterprise discovery (org dynamics, political landscape)","Advanced qualification (MEDDIC/MEDDPICC)","Expert objection handling","Advanced negotiation (BATNA, ZOPA, trade-offs)","Deal orchestration","Strategic account management"],
+ can:["Navigate complex enterprise deals","Negotiate multi-million dollar contracts","Build executive relationships","Manage multiple stakeholders","Create strategic account plans"],
+ weak:["Occasional strategic blind spots","Can be overconfident","May struggle with very complex negotiations"],
+ metrics:"35-45% close rate on qualified deals · Large average deal size · Consistent quota attainment · Strong forecast accuracy",
+ next:"Consistent performance across cycles, ability to train others, deep strategic thinking, industry thought leadership, flawless execution"},
+{n:5,name:"Elite",skills:["Mastery of all previous skills","Strategic deal crafting","Boardroom-level communication","Complex negotiation mastery","Team leadership","Sales methodology innovation"],
+ can:["Handle any sales situation","Negotiate at the highest levels","Build lasting executive relationships","Create and execute complex deal strategies","Teach others to do the same"],
+ weak:["Rare, but may become complacent","May struggle to document/transfer knowledge"],
+ metrics:"50%+ close rate on qualified deals · Seven-figure deals · Predictable, consistent performance · Referral-driven pipeline",
+ next:"Consistency, ability to train others, strategic thinking, emotional mastery, industry influence — this is the top of the framework"}
+];
+
+/* ---- Buyer Psychology ---- */
+const PSYCH_DRIVERS = ["Problem solving — they have a pain and want it solved","Opportunity capture — they see a chance to improve","Risk reduction — they want to avoid negative outcomes","Status elevation — they want to look good","Identity alignment — they want to be consistent with who they are"];
+const PSYCH_HESITATIONS = ["Risk perception — fear of making a wrong decision","Uncertainty — not sure if this will work","Trust deficit — don't fully trust you or your company","Internal politics — worried about how others will react","Loss aversion — more afraid of losing than excited about gaining","Decision fatigue — too many decisions, too little energy","Opportunity cost — what else could they do with this money?","Status quo bias — change is hard, staying the same is easy"];
+const PSYCH_DECISION = ["Emotional trigger — something creates a desire to change","Rational justification — they find logical reasons to support the emotional desire","Social validation — they check with others to confirm","Risk assessment — they evaluate potential negative outcomes","Commitment — they decide to act"];
+const PSYCH_SEGMENTS = [
+ ["B2C","Individual, emotional, quick","Emotion, status, identity","Price, trust","Emotional connection, social proof"],
+ ["SMB","Owner/leader, personal, moderate","Owner's goals, cost savings","Budget, time","Personal relationship, ROI"],
+ ["Mid-market","Multiple stakeholders, formal","Department goals, efficiency","Integration, change","Multi-threaded, business case"],
+ ["Enterprise","Complex, committee, slow","Strategic goals, risk reduction","Politics, complexity","Strategic selling, coalition building"],
+ ["Executive buyers","High-level, outcome-focused","Strategic impact, risk","Credibility, ROI","Executive communication, business case"]
+];
+
+/* ---- Career Roadmap ---- */
+const CAREER_STAGES = [
+ ["Sales Development / BDR","0-2 yrs","Prospecting, meeting booking","$50-80K base + $20-30K commission","Focusing on activity over quality, not learning from rejection"],
+ ["Account Executive","2-4 yrs","Full sales cycle, closing","$70-100K base + $50-100K commission","Chasing bad deals, poor qualification"],
+ ["Senior AE","4-6 yrs","Larger deals, more complex","$90-120K base + $70-120K commission","Not developing strategic skills, plateauing"],
+ ["Enterprise AE","6-10 yrs","Multi-stakeholder, complex deals","$100-150K base + $100-200K commission","Not building executive relationships, poor account planning"],
+ ["Strategic AE","10+ yrs","Largest, most strategic deals","$150-200K base + $150-300K commission","Burnout, not mentoring others"],
+ ["Sales Manager","4-8 yrs","Managing team, coaching","$100-130K base + $50-100K commission","Micromanaging, not developing people"],
+ ["Sales Director","8-12 yrs","Managing managers, strategy","$130-180K base + $80-150K commission","Losing touch with customers, politics"],
+ ["VP Sales","12+ yrs","Overall sales organization","$200-300K base + significant equity","Not scaling, poor hiring"]
+];
+const PROMOTABLE = ["Consistently exceed quota — the foundation","Document your process — show you can teach others","Mentor junior salespeople — demonstrate leadership","Develop strategic thinking — go beyond tactics","Build executive relationships — both internal and external","Communicate effectively — both up and down","Be a team player — help others succeed","Show business acumen — understand the bigger picture"];
+const INDUSTRIES = [
+ ["SaaS",9,6,9,9,9,7,72],["AI",10,7,9,9,8,7,76],["Cybersecurity",9,7,9,8,8,7,73],["Cloud",8,6,8,8,8,6,68],
+ ["Consulting",9,8,7,8,7,8,71],["Financial services",10,8,7,7,6,8,71],["Enterprise software",9,8,8,9,8,7,75],
+ ["Marketing services",7,5,8,7,9,4,60],["Professional services",8,6,7,8,7,6,66],["Technology services",8,6,8,8,8,5,66]
+];
+const EXPERIENCE_METHODS = [
+ ["Mock sales (friends, mentors, AI)","Safe, repeatable","Not real stakes"],
+ ["Freelance sales for small businesses","Real experience, flexible","No support, variable income"],
+ ["Commission-only (fair terms)","Real experience, potential upside","High risk, often exploitative if terms are bad"],
+ ["Selling your own services","Full control, real experience","Need to create a product"],
+ ["Selling digital products","Scalable, learn marketing","Need to create product"],
+ ["Appointment setting","Real experience, entry point","Low pay, limited scope"],
+ ["B2B prospecting (cold call/email)","Real experience, in-demand skill","Rejection, repetitive"],
+ ["Volunteering (non-profits)","Low pressure, real experience","Unpaid"],
+ ["Shadowing salespeople","Learn from experts","Hard to arrange"]
+];
+const SCAMS = ["\"Pay to access our leads\" — they make money from you, not from sales","\"Commission-only but you must buy inventory\" — they're selling products to you","\"Make $100K in your first month\" — unrealistic promises","\"No experience needed\" for high-ticket sales — it requires real skills","\"Work from home, flexible hours\" (vague) — often MLM or scam","\"We'll teach you our proven system\" (expensive training) — they profit from training, not sales","\"Unlimited earning potential\" with no base — often means you won't earn anything"];
+
+/* ---- Habits ---- */
+const HABITS_DAILY = ["Prospecting — pipeline is the lifeblood of sales (1-2 hrs)","Practice — deliberate practice improves skills (30 min)","Review — learn from your own calls (15 min)","Pipeline review — know where every deal stands (15 min)","Exercise — maintains energy and confidence (30 min)","Sleep — cognitive function and emotional control (7-8 hrs)"];
+const HABITS_WEEKLY = ["Goal setting — focuses effort (30 min)","Call review — identifies patterns (1 hr)","Skill development — continuous improvement (2-3 hrs)","Relationship building — maintains network (1 hr)","Reflection — integrates learning (30 min)"];
+const HABITS_MONTHLY = ["Skill assessment — tracks progress (1 hr)","Pipeline review — strategic planning (1-2 hrs)","Book completion — expands knowledge (4-6 hrs)","Goal review — adjusts course (30 min)","Rest and recovery — prevents burnout (1-2 days)"];
+const HABITS_QUARTERLY = ["Deep reflection — identifies patterns (2 hrs)","Strategic planning — sets direction (2-3 hrs)","Skill audit — identifies gaps (1 hr)","Mentorship — gives back, reinforces learning (2 hrs)","Rest and recharge — prevents burnout (3-5 days)"];
+const HABITS_MATTER = ["Consistent prospecting","Deliberate practice","Call review","Pipeline management","Sleep and exercise","Reading and learning"];
+const HABITS_THEATER = ["Perfecting CRM hygiene (past a point)","Obsessive email management","Over-optimizing tools","Attending every webinar","Reading too many books without application","Spending hours on LinkedIn without prospecting"];
+const ANTI_HABITS = [
+ ["Talking too much","You can't learn while talking","Practice the 70/30 rule (70% listening, 30% talking)"],
+ ["Pitching too early","You haven't diagnosed the problem","Complete discovery before presenting"],
+ ["Feature dumping","Overwhelms and confuses","Connect every feature to a specific pain"],
+ ["Discounting too quickly","Signals low value, destroys margins","Diagnose the objection before discounting"],
+ ["Arguing with prospects","Creates resistance, destroys trust","Acknowledge their perspective, ask questions"],
+ ["Fear of asking for money","Deals don't close themselves","Practice asking for commitment"],
+ ["Avoiding difficult conversations","Problems fester, deals stall","Address issues directly and early"],
+ ["Poor follow-up","Deals die in the pipeline","Create a disciplined follow-up system"],
+ ["Not qualifying","Wasting time on bad deals","Implement BANT/MEDDIC on every deal"],
+ ["Chasing bad opportunities","Resources wasted, pipeline inflated","Walk away from unqualified deals"],
+ ["Taking rejection personally","Emotional damage, reduced confidence","See rejection as information"],
+ ["Being needy","Repels buyers, signals low value","Approach from a position of strength"],
+ ["Overusing scripts","Sounds robotic, lacks authenticity","Internalize frameworks, not scripts"],
+ ["Fearing the phone","Limits prospecting","Practice until comfortable"],
+ ["Not preparing","Wastes everyone's time","Prepare for every call"],
+ ["Ignoring data","Missing patterns and insights","Track and review metrics"],
+ ["Neglecting self-care","Burnout, poor performance","Prioritize sleep, exercise, rest"],
+ ["Comparing yourself to others","Destroys confidence","Focus on your own progress"]
+];
+
+
+/* ========================= SUPABASE (optional hosted database) =========================
+   Fill these two in to switch this file from local/Claude storage over to your own
+   Supabase project. Leave blank to keep using the built-in Claude/local storage. */
+const SUPABASE_URL = "https://pmqzxmflbdtpiaexjcoe.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtcXp4bWZsYmR0cGlhZXhqY29lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NTk5NzksImV4cCI6MjEwMjIzNTk3OX0.pnPjprtOAaFeXhORxM87R_jdT8PU199LznkPDqj9_xY";
+const SUPABASE_CONFIGURED = SUPABASE_URL.startsWith("http") && SUPABASE_ANON_KEY.length > 20;
+const sb = (SUPABASE_CONFIGURED && typeof window.supabase !== "undefined")
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+let sbUser = null;
+
+/* ========================= STORAGE LAYER =========================
+   Priority: Supabase (your own database, if configured + signed in)
+          -> window.storage (Claude in-app preview)
+          -> localStorage (file opened directly in a browser) */
+const LS_PREFIX = "campaign-log:";
+const hasCloudStorage = typeof window.storage !== "undefined" && typeof window.storage.get === "function";
+
+async function storageGet(key){
+  if(sb && sbUser){
+    try{
+      const { data, error } = await sb.from("progress").select("value").eq("user_id", sbUser.id).eq("key", key).maybeSingle();
+      if(error || !data) return null;
+      return {key, value:data.value, shared:false};
+    }catch(e){ return null; }
+  }
+  if(hasCloudStorage){
+    try{ return await window.storage.get(key, false); }
+    catch(e){ return null; }
+  }
+  try{
+    const raw = localStorage.getItem(LS_PREFIX+key);
+    return raw===null ? null : {key, value:raw, shared:false};
+  }catch(e){ return null; }
+}
+async function storageSet(key, value){
+  if(sb && sbUser){
+    try{
+      const { error } = await sb.from("progress").upsert({ user_id: sbUser.id, key, value, updated_at: new Date().toISOString() });
+      if(error){ console.warn("database save failed:", key, error.message); return null; }
+      return {key, value, shared:false};
+    }catch(e){ console.warn("database save failed:", key); return null; }
+  }
+  if(hasCloudStorage){
+    try{ return await window.storage.set(key, value, false); }
+    catch(e){ console.warn("cloud storage save failed:", key); return null; }
+  }
+  try{
+    localStorage.setItem(LS_PREFIX+key, value);
+    return {key, value, shared:false};
+  }catch(e){ console.warn("local storage save failed:", key); return null; }
+}
+
+let STATE = {
+  roadmap:{}, books:{}, roleplay:{}, journal:[], scoreboard:[], currentMonth:1, callsign:"", startDate:null,
+  week1:{}, milestones:{}, objectionPractice:{}, callReviews:[], kpiActuals:{}, antiHabits:{}, routinePref:"std"
+};
+
+async function loadState(){
+  const keys = ["roadmap-checks","books-status","roleplay-progress","journal-entries","scoreboard-entries","current-month","callsign","start-date",
+                "week1-checks","milestones-checks","objection-practice","call-review-log","kpi-actuals","anti-habits-checks","routine-pref"];
+  const results = await Promise.all(keys.map(k=>storageGet(k)));
+  STATE.roadmap = results[0]? JSON.parse(results[0].value) : {};
+  STATE.books = results[1]? JSON.parse(results[1].value) : {};
+  STATE.roleplay = results[2]? JSON.parse(results[2].value) : {};
+  STATE.journal = results[3]? JSON.parse(results[3].value) : [];
+  STATE.scoreboard = results[4]? JSON.parse(results[4].value) : [];
+  STATE.currentMonth = results[5]? JSON.parse(results[5].value) : 1;
+  STATE.callsign = results[6]? results[6].value : "";
+  STATE.startDate = results[7]? results[7].value : null;
+  STATE.week1 = results[8]? JSON.parse(results[8].value) : {};
+  STATE.milestones = results[9]? JSON.parse(results[9].value) : {};
+  STATE.objectionPractice = results[10]? JSON.parse(results[10].value) : {};
+  STATE.callReviews = results[11]? JSON.parse(results[11].value) : [];
+  STATE.kpiActuals = results[12]? JSON.parse(results[12].value) : {};
+  STATE.antiHabits = results[13]? JSON.parse(results[13].value) : {};
+  STATE.routinePref = results[14]? results[14].value : "std";
+  if(!STATE.startDate){
+    STATE.startDate = new Date().toISOString().slice(0,10);
+    storageSet("start-date", STATE.startDate);
+  }
+  updateStorageBadge();
+}
+function persist(key, valueObj){
+  const v = typeof valueObj === "string" ? valueObj : JSON.stringify(valueObj);
+  storageSet(key, v);
+}
+function updateStorageBadge(){
+  const el = document.getElementById("storageBadge");
+  if(!el) return;
+  const signOutBtn = document.getElementById("signOutBtn");
+  if(sb && sbUser){
+    el.textContent = "SAVED TO YOUR DATABASE";
+    el.title = "Signed in as "+sbUser.email+". Progress saves to your own Supabase database and follows you to any device you sign into.";
+    if(signOutBtn) signOutBtn.style.display = "inline-block";
+  } else {
+    el.textContent = hasCloudStorage ? "SAVED TO CLAUDE" : "SAVED LOCALLY (this browser)";
+    el.title = hasCloudStorage
+      ? "Progress is stored on your Claude account and will be here next time you open this file in Claude."
+      : "Progress is stored in this browser's local storage, tied to this exact file. Reopen the same file in the same browser to see it again — clearing browser data or opening a re-downloaded copy elsewhere will not carry it over.";
+    if(signOutBtn) signOutBtn.style.display = "none";
+  }
+}
+
+/* ---- Auth gate (only active when SUPABASE_CONFIGURED) ---- */
+function showAuthStatus(msg){ document.getElementById("authStatus").textContent = msg || ""; }
+async function tryAuthedBoot(){
+  if(!SUPABASE_CONFIGURED){ return true; } // no database configured, skip straight to local/Claude storage
+  if(!sb){ showAuthStatus("Supabase library failed to load — check your connection."); document.getElementById("authGate").style.display="flex"; return false; }
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){ sbUser = session.user; document.getElementById("authGate").style.display="none"; return true; }
+  document.getElementById("authGate").style.display="flex";
+  return false;
+}
+document.getElementById("authSignIn").addEventListener("click", async ()=>{
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  if(!email || !password){ showAuthStatus("Enter your email and password."); return; }
+  showAuthStatus("Signing in…");
+  const { data, error } = await sb.auth.signInWithPassword({email, password});
+  if(error){ showAuthStatus(error.message); return; }
+  sbUser = data.user;
+  document.getElementById("authGate").style.display="none";
+  startApp();
+});
+document.getElementById("authSignUp").addEventListener("click", async ()=>{
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  if(!email || !password){ showAuthStatus("Enter an email and password (6+ characters)."); return; }
+  showAuthStatus("Creating account…");
+  const { data, error } = await sb.auth.signUp({email, password});
+  if(error){ showAuthStatus(error.message); return; }
+  if(data.session){
+    sbUser = data.user;
+    document.getElementById("authGate").style.display="none";
+    startApp();
+  } else {
+    showAuthStatus("Check your email to confirm your account, then sign in.");
+  }
+});
+document.getElementById("signOutBtn").addEventListener("click", async ()=>{
+  if(!sb) return;
+  await sb.auth.signOut();
+  location.reload();
+});
+
+/* ========================= TAB NAV ========================= */
+document.getElementById("tabs").addEventListener("click", (e)=>{
+  if(e.target.tagName !== "BUTTON") return;
+  const view = e.target.dataset.view;
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.toggle("active", b===e.target));
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("view-"+view).classList.add("active");
+});
+
+/* ========================= RENDER: DASHBOARD ========================= */
+function computeOverallReadiness(){
+  let totalItems=0, doneItems=0;
+  MONTHS.forEach((m,mi)=>{
+    const cats = [["skills",m.skills],["kpis",m.kpis],["tests",m.tests],["grad",m.grad]];
+    cats.forEach(([cat,list])=>{
+      list.forEach((_,ii)=>{
+        totalItems++;
+        if(STATE.roadmap[mi+"_"+cat+"_"+ii]) doneItems++;
+      });
+    });
+  });
+  const roadmapPct = totalItems? doneItems/totalItems : 0;
+  const bookDone = BOOKS.filter(b=>STATE.books[b.id]==="Finished").length;
+  const bookPct = bookDone/BOOKS.length;
+  const rpDone = Object.values(STATE.roleplay).filter(r=>r&&r.done).length;
+  const rpPct = rpDone/50;
+  const overall = (roadmapPct*0.5 + bookPct*0.25 + rpPct*0.25);
+  return {overall, roadmapPct, bookPct, rpPct, bookDone, rpDone};
+}
+
+function renderMonthSelector(){
+  const sel = document.getElementById("monthSelector");
+  sel.innerHTML = MONTHS.map(m=>`<option value="${m.n}" ${m.n===STATE.currentMonth?"selected":""}>Month ${m.n} — ${m.name}</option>`).join("");
+  sel.onchange = ()=>{ STATE.currentMonth = parseInt(sel.value); persist("current-month", STATE.currentMonth); renderDashboard(); };
+}
+
+function renderDashboard(){
+  const {overall, bookDone, rpDone} = computeOverallReadiness();
+  const pct = Math.round(overall*100);
+  document.getElementById("gaugePct").textContent = pct+"%";
+  const circumference = 578;
+  const offset = circumference - (circumference*overall);
+  document.getElementById("gaugeArc").setAttribute("stroke-dashoffset", offset);
+
+  const start = new Date(STATE.startDate);
+  const now = new Date();
+  const days = Math.max(1, Math.floor((now-start)/86400000)+1);
+  document.getElementById("dayCount").textContent = "DAY "+String(days).padStart(3,"0");
+
+  document.getElementById("statMonth").innerHTML = STATE.currentMonth+"<small>/12</small>";
+  document.getElementById("statBooks").innerHTML = bookDone+"<small>/19</small>";
+  document.getElementById("statRoleplay").innerHTML = rpDone+"<small>/50</small>";
+  document.getElementById("statStreak").innerHTML = computeStreak()+"<small> day</small>";
+
+  const m = MONTHS[STATE.currentMonth-1];
+  document.getElementById("monthGoalText").textContent = m.goal;
+  const focusHtml = m.grad.map((g,i)=>{
+    const key = STATE.currentMonth-1+"_grad_"+i;
+    const done = !!STATE.roadmap[key];
+    return `<div class="focus-line"><span class="dot ${done?'':'off'}"></span><span>${g}</span></div>`;
+  }).join("");
+  document.getElementById("dashFocusList").innerHTML = focusHtml;
+
+  // level
+  const lastScore = STATE.scoreboard.length? STATE.scoreboard[STATE.scoreboard.length-1].total : 0;
+  let levelIdx = 1, levelName="Foundation";
+  if(lastScore>=90){levelIdx=5;levelName="Elite";}
+  else if(lastScore>=80){levelIdx=4;levelName="Advanced";}
+  else if(lastScore>=70){levelIdx=3;levelName="Strong";}
+  else if(lastScore>=60){levelIdx=2;levelName="Competent";}
+  else {levelIdx=1;levelName="Foundation";}
+  document.getElementById("levelTag").textContent = "Level "+levelIdx+" — "+levelName;
+  document.getElementById("levelTrack").innerHTML = [1,2,3,4,5].map(i=>`<div class="level-seg ${i<=levelIdx?'filled':''}"></div>`).join("");
+}
+
+function computeStreak(){
+  if(!STATE.journal.length) return 0;
+  const dates = [...new Set(STATE.journal.map(e=>e.date))].sort().reverse();
+  let streak=0; let cursor = new Date();
+  for(let i=0;i<dates.length;i++){
+    const d = new Date(dates[i]);
+    const diff = Math.round((cursor-d)/86400000);
+    if(diff<=1){ streak++; cursor=d; } else break;
+  }
+  return streak;
+}
+
+/* ========================= RENDER: ROADMAP ========================= */
+function renderMonths(){
+  const container = document.getElementById("monthsContainer");
+  container.innerHTML = MONTHS.map((m,mi)=>{
+    const cats = [["skills",m.skills],["kpis",m.kpis],["tests",m.tests],["grad",m.grad]];
+    let total=0, done=0;
+    cats.forEach(([cat,list])=>list.forEach((_,ii)=>{ total++; if(STATE.roadmap[mi+"_"+cat+"_"+ii]) done++; }));
+
+    const colHtml = (title,cat,list)=>`
+      <div class="check-col-title">${title}</div>
+      ${list.map((txt,ii)=>{
+        const key = mi+"_"+cat+"_"+ii;
+        const checked = STATE.roadmap[key]?"checked":"";
+        return `<label class="check-item"><input type="checkbox" data-key="${key}" ${checked}><span class="txt">${txt}</span></label>`;
+      }).join("")}
+    `;
+
+    return `<div class="month-item" data-idx="${mi}">
+      <div class="month-head">
+        <div class="month-head-left">
+          <div class="month-num display">${String(m.n).padStart(2,"0")}</div>
+          <div>
+            <div class="month-name">${m.name}</div>
+            <div class="month-goal">${m.goal}</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div class="month-progress-mini"><b>${done}</b>/${total}</div>
+          <svg class="chevron" width="16" height="16" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        </div>
+      </div>
+      <div class="month-body">
+        <div style="margin-top:12px;">
+          ${m.books.map(bt=>{
+            const b = BOOKS.find(x=>x.title===bt);
+            const isDone = b && STATE.books[b.id]==="Finished";
+            return `<span class="book-chip ${isDone?'done':''}">${bt}</span>`;
+          }).join("")}
+        </div>
+        <div class="month-body-grid">
+          <div>${colHtml("Skills to Build","skills",m.skills)}${colHtml("KPIs","kpis",m.kpis)}</div>
+          <div>${colHtml("Graduation Tests","tests",m.tests)}${colHtml("Graduation Criteria","grad",m.grad)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  container.querySelectorAll(".month-head").forEach(h=>{
+    h.addEventListener("click",()=>{ h.closest(".month-item").classList.toggle("open"); });
+  });
+  container.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      STATE.roadmap[cb.dataset.key] = cb.checked;
+      persist("roadmap-checks", STATE.roadmap);
+      renderMonths();
+      renderDashboard();
+    });
+  });
+  // reopen previously open month? default: open current month
+  const cur = container.querySelector(`.month-item[data-idx="${STATE.currentMonth-1}"]`);
+  if(cur) cur.classList.add("open");
+}
+
+/* ========================= RENDER: BOOKS ========================= */
+function renderBooks(){
+  const tbody = document.getElementById("booksBody");
+  tbody.innerHTML = BOOKS.map(b=>{
+    const status = STATE.books[b.id] || "Not started";
+    return `<tr>
+      <td>${b.title}</td>
+      <td style="color:var(--muted);">${b.author}</td>
+      <td><span class="tier-badge tier-${b.tier}">Tier ${b.tier}</span></td>
+      <td>
+        <select class="status-select" data-id="${b.id}">
+          <option ${status==="Not started"?"selected":""}>Not started</option>
+          <option ${status==="Reading"?"selected":""}>Reading</option>
+          <option ${status==="Finished"?"selected":""}>Finished</option>
+        </select>
+      </td>
+    </tr>`;
+  }).join("");
+  tbody.querySelectorAll("select").forEach(sel=>{
+    sel.addEventListener("change",()=>{
+      STATE.books[sel.dataset.id] = sel.value;
+      persist("books-status", STATE.books);
+      const finished = BOOKS.filter(b=>STATE.books[b.id]==="Finished").length;
+      document.getElementById("bookProgressTag").textContent = finished+"/19 finished";
+      renderDashboard();
+      renderMonths();
+    });
+  });
+  const finished = BOOKS.filter(b=>STATE.books[b.id]==="Finished").length;
+  document.getElementById("bookProgressTag").textContent = finished+"/19 finished";
+}
+
+/* ========================= RENDER: ROLEPLAY ========================= */
+function renderRoleplay(filter="all"){
+  const tbody = document.getElementById("roleplayBody");
+  const list = filter==="all" ? ROLEPLAY : ROLEPLAY.filter(r=>r.level==parseInt(filter));
+  tbody.innerHTML = list.map(r=>{
+    const prog = STATE.roleplay[r.id] || {done:false,score:""};
+    return `<tr>
+      <td class="mono" style="color:var(--muted);">${r.id}</td>
+      <td><span class="lvl-badge lvl-${r.level}">L${r.level}</span></td>
+      <td>${r.name}</td>
+      <td style="color:var(--muted);">${r.persona}</td>
+      <td><span class="diff-track"><span class="diff-fill" style="width:${r.diff*10}%;"></span></span> <span class="mono" style="font-size:11px; color:var(--muted);">${r.diff}/10</span></td>
+      <td><input type="checkbox" class="rp-done rp-checkbox" data-id="${r.id}" ${prog.done?"checked":""}></td>
+      <td><input type="number" class="score-input rp-score" data-id="${r.id}" min="0" max="100" placeholder="—" value="${prog.score||""}"></td>
+    </tr>`;
+  }).join("");
+
+  tbody.querySelectorAll(".rp-done").forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      const id = cb.dataset.id;
+      const existing = STATE.roleplay[id] || {done:false,score:""};
+      existing.done = cb.checked;
+      STATE.roleplay[id] = existing;
+      persist("roleplay-progress", STATE.roleplay);
+      updateRoleplayTag();
+      renderDashboard();
+    });
+  });
+  tbody.querySelectorAll(".rp-score").forEach(inp=>{
+    inp.addEventListener("change",()=>{
+      const id = inp.dataset.id;
+      const existing = STATE.roleplay[id] || {done:false,score:""};
+      existing.score = inp.value;
+      STATE.roleplay[id] = existing;
+      persist("roleplay-progress", STATE.roleplay);
+    });
+  });
+  updateRoleplayTag();
+}
+function updateRoleplayTag(){
+  const done = Object.values(STATE.roleplay).filter(r=>r&&r.done).length;
+  document.getElementById("roleplayProgressTag").textContent = done+"/50 logged";
+}
+document.getElementById("rpFilter").addEventListener("change",(e)=>renderRoleplay(e.target.value));
+
+/* ========================= RENDER: JOURNAL ========================= */
+function renderJournal(){
+  const list = document.getElementById("journalList");
+  document.getElementById("entryCount").textContent = STATE.journal.length+" entries";
+  if(!STATE.journal.length){
+    list.innerHTML = `<div class="empty-state">No entries yet. Log today's call activity above to start your streak.</div>`;
+    return;
+  }
+  const sorted = [...STATE.journal].sort((a,b)=> b.date.localeCompare(a.date) || b.ts-a.ts);
+  list.innerHTML = sorted.map(e=>`
+    <div class="entry-card">
+      <div class="entry-head">
+        <div class="entry-date">${e.date}</div>
+        <div class="entry-meta">${e.calls||0} calls · ${e.meetings||0} meetings</div>
+      </div>
+      <div class="entry-body">
+        ${e.good?`<div><b>Went well:</b> ${escapeHtml(e.good)}</div>`:""}
+        ${e.bad?`<div><b>Went badly:</b> ${escapeHtml(e.bad)}</div>`:""}
+        ${e.objection?`<div><b>Objection:</b> ${escapeHtml(e.objection)}</div>`:""}
+        ${e.focus?`<div><b>Tomorrow's focus:</b> ${escapeHtml(e.focus)}</div>`:""}
+      </div>
+    </div>
+  `).join("");
+}
+function escapeHtml(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+
+document.getElementById("jSubmit").addEventListener("click",()=>{
+  const entry = {
+    date: new Date().toISOString().slice(0,10),
+    ts: Date.now(),
+    calls: document.getElementById("jCalls").value,
+    meetings: document.getElementById("jMeetings").value,
+    good: document.getElementById("jGood").value.trim(),
+    bad: document.getElementById("jBad").value.trim(),
+    objection: document.getElementById("jObjection").value.trim(),
+    focus: document.getElementById("jFocus").value.trim()
+  };
+  STATE.journal.push(entry);
+  persist("journal-entries", STATE.journal);
+  ["jCalls","jMeetings","jGood","jBad","jObjection","jFocus"].forEach(id=>document.getElementById(id).value="");
+  renderJournal();
+  renderDashboard();
+});
+
+/* ========================= RENDER: SCOREBOARD ========================= */
+let currentSbValues = {};
+function renderScoreboardInputs(){
+  const wrap = document.getElementById("sbInputs");
+  wrap.innerHTML = SCORE_CATS.map((c,i)=>{
+    currentSbValues[i] = currentSbValues[i] ?? 5;
+    return `<div class="sb-row">
+      <label>${c}</label>
+      <input type="range" min="0" max="10" value="${currentSbValues[i]}" data-i="${i}">
+      <span class="val" id="sbVal${i}">${currentSbValues[i]}</span>
+    </div>`;
+  }).join("");
+  wrap.querySelectorAll("input[type=range]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      currentSbValues[inp.dataset.i] = parseInt(inp.value);
+      document.getElementById("sbVal"+inp.dataset.i).textContent = inp.value;
+      updateSbTotal();
+    });
+  });
+  updateSbTotal();
+}
+function updateSbTotal(){
+  const total = Object.values(currentSbValues).reduce((a,b)=>a+b,0);
+  document.getElementById("sbTotal").textContent = total;
+}
+document.getElementById("sbSubmit").addEventListener("click",()=>{
+  const total = Object.values(currentSbValues).reduce((a,b)=>a+b,0);
+  const label = document.getElementById("sbLabel").value.trim() || ("Entry "+(STATE.scoreboard.length+1));
+  STATE.scoreboard.push({label, total, date:new Date().toISOString().slice(0,10), cats:{...currentSbValues}});
+  persist("scoreboard-entries", STATE.scoreboard);
+  document.getElementById("sbLabel").value="";
+  renderScoreHistory();
+  renderDashboard();
+});
+function renderScoreHistory(){
+  const list = document.getElementById("sbHistoryList");
+  if(!STATE.scoreboard.length){
+    list.innerHTML = `<div class="empty-state">No scores logged yet.</div>`;
+    drawSparkline([]);
+    return;
+  }
+  const rev = [...STATE.scoreboard].reverse();
+  list.innerHTML = rev.map(s=>`
+    <div class="entry-card" style="padding:10px 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px;">${s.label}</span>
+        <span class="mono" style="color:var(--brass); font-size:14px;">${s.total}/100</span>
+      </div>
+    </div>
+  `).join("");
+  drawSparkline(STATE.scoreboard.map(s=>s.total));
+}
+function drawSparkline(vals){
+  const svg = document.getElementById("sbSparkline");
+  if(!vals.length){ svg.innerHTML = `<text x="10" y="60" fill="#5c6472" font-size="12" font-family="Inter">No history yet</text>`; return; }
+  const w=400,h=120,pad=10;
+  const max=100,min=0;
+  const step = vals.length>1 ? (w-2*pad)/(vals.length-1) : 0;
+  const pts = vals.map((v,i)=>{
+    const x = pad + i*step;
+    const y = h-pad - ((v-min)/(max-min))*(h-2*pad);
+    return [x,y];
+  });
+  const path = pts.map((p,i)=> (i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  const dots = pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="#c9974b"/>`).join("");
+  svg.innerHTML = `
+    <line x1="10" y1="${h-pad}" x2="${w-10}" y2="${h-pad}" stroke="#2c323d"/>
+    <path d="${path}" fill="none" stroke="#c9974b" stroke-width="2"/>
+    ${dots}
+  `;
+}
+
+/* ========================= RENDER: FIRST 90 DAYS ========================= */
+function renderFirst90(){
+  const w1 = document.getElementById("week1Container");
+  w1.innerHTML = WEEK1_DAYS.map(day=>{
+    const key = "d"+day.d;
+    const tasksChecked = day.tasks.map((t,ti)=> STATE.week1[key+"_"+ti]).filter(Boolean).length;
+    return `<div class="month-item" data-day="${day.d}">
+      <div class="month-head">
+        <div class="month-head-left">
+          <div class="month-num display" style="font-size:20px;">D${day.d}</div>
+          <div class="month-name" style="font-size:14px;">Day ${day.d}</div>
+        </div>
+        <div class="month-progress-mini"><b>${tasksChecked}</b>/${day.tasks.length}</div>
+      </div>
+      <div class="month-body" style="display:block; border-top:1px solid var(--hairline); padding-top:10px;">
+        ${day.tasks.map((t,ti)=>{
+          const k = key+"_"+ti;
+          return `<label class="check-item"><input type="checkbox" class="w1-check" data-key="${k}" ${STATE.week1[k]?"checked":""}><span class="txt">${t}</span></label>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }).join("");
+  w1.querySelectorAll(".month-head").forEach(h=>h.addEventListener("click",()=>h.closest(".month-item").classList.toggle("open")));
+  w1.querySelectorAll(".w1-check").forEach(cb=>cb.addEventListener("change",()=>{
+    STATE.week1[cb.dataset.key] = cb.checked; persist("week1-checks", STATE.week1); renderFirst90();
+  }));
+  let totalW1=0, doneW1=0;
+  WEEK1_DAYS.forEach(day=>day.tasks.forEach((_,ti)=>{ totalW1++; if(STATE.week1["d"+day.d+"_"+ti]) doneW1++; }));
+  document.getElementById("week1Tag").textContent = doneW1+"/"+totalW1+" tasks logged";
+
+  document.getElementById("weeks234Container").innerHTML = WEEKS234.map(w=>`
+    <div style="margin-bottom:16px;">
+      <div class="check-col-title" style="margin-top:0;">${w.w} <span style="color:var(--muted); text-transform:none; letter-spacing:0; font-weight:400;">— ${w.focus}</span></div>
+      ${w.routine.map(r=>`<div class="focus-line"><span class="dot off"></span><span>${r}</span></div>`).join("")}
+    </div>
+  `).join("");
+
+  const ms = document.getElementById("milestonesContainer");
+  ms.innerHTML = MILESTONES_90.map((grp,gi)=>`
+    <div style="margin-bottom:18px;">
+      <div class="check-col-title" style="margin-top:0;">${grp.month}</div>
+      ${grp.items.map((it,ii)=>{
+        const k = "m"+gi+"_"+ii;
+        return `<label class="check-item"><input type="checkbox" class="ms-check" data-key="${k}" ${STATE.milestones[k]?"checked":""}><span class="txt">${it}</span></label>`;
+      }).join("")}
+    </div>
+  `).join("");
+  ms.querySelectorAll(".ms-check").forEach(cb=>cb.addEventListener("change",()=>{
+    STATE.milestones[cb.dataset.key] = cb.checked; persist("milestones-checks", STATE.milestones); updateMilestoneTag();
+  }));
+  updateMilestoneTag();
+}
+function updateMilestoneTag(){
+  let total=0, done=0;
+  MILESTONES_90.forEach((grp,gi)=>grp.items.forEach((_,ii)=>{ total++; if(STATE.milestones["m"+gi+"_"+ii]) done++; }));
+  document.getElementById("milestoneTag").textContent = done+"/"+total+" hit";
+}
+
+/* ========================= RENDER: ROUTINES ========================= */
+function renderRoutines(){
+  const sel = document.getElementById("routineVersion");
+  sel.value = STATE.routinePref;
+  sel.onchange = ()=>{ STATE.routinePref = sel.value; persist("routine-pref", STATE.routinePref); renderDailyRoutine(); };
+  renderDailyRoutine();
+  document.getElementById("weeklyRoutineBody").innerHTML = WEEKLY_ROUTINE.map(r=>rowHtml(r)).join("");
+  document.getElementById("monthlyRoutineBody").innerHTML = MONTHLY_ROUTINE.map(r=>rowHtml(r)).join("");
+}
+function rowHtml(r){ return `<tr><td class="mono" style="color:var(--brass);">${r[0]}</td><td>${r[1]}</td><td style="color:var(--muted);">${r[2]}</td></tr>`; }
+function renderDailyRoutine(){
+  document.querySelector("#dailyRoutineTable tbody").innerHTML = DAILY_ROUTINES[STATE.routinePref].map(r=>rowHtml(r)).join("");
+}
+
+/* ========================= RENDER: OBJECTIONS ========================= */
+function renderObjections(){
+  document.getElementById("objectionsContainer").innerHTML = OBJECTIONS.map((o,oi)=>{
+    const count = STATE.objectionPractice[oi] || 0;
+    return `<section class="panel" style="background:var(--panel-raised); margin-bottom:14px;">
+      <div class="panel-head">
+        <div class="panel-title display" style="font-size:16px;">${o.title}</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="panel-tag mono">Drilled ${count}x</span>
+          <button class="btn-ghost obj-drill" data-i="${oi}">+ Log a drill</button>
+        </div>
+      </div>
+      <div class="month-body-grid">
+        <div>
+          <div class="check-col-title" style="margin-top:0;">What They May Actually Mean</div>
+          ${o.means.map(m=>`<div class="focus-line"><span class="dot off"></span><span>${m}</span></div>`).join("")}
+          <div class="check-col-title">What NOT to Say</div>
+          ${o.avoid.map(m=>`<div class="focus-line"><span class="dot" style="background:var(--signal);"></span><span>${m}</span></div>`).join("")}
+        </div>
+        <div>
+          <div class="check-col-title" style="margin-top:0;">Questions to Ask</div>
+          ${o.ask.map(m=>`<div class="focus-line"><span class="dot"></span><span>${m}</span></div>`).join("")}
+          <div class="check-col-title">Example Response</div>
+          <p style="font-size:13px; color:var(--muted); line-height:1.5; font-style:italic;">"${o.example}"</p>
+        </div>
+      </div>
+    </section>`;
+  }).join("");
+  document.querySelectorAll(".obj-drill").forEach(btn=>btn.addEventListener("click",()=>{
+    const i = btn.dataset.i;
+    STATE.objectionPractice[i] = (STATE.objectionPractice[i]||0)+1;
+    persist("objection-practice", STATE.objectionPractice);
+    renderObjections();
+  }));
+}
+
+/* ========================= RENDER: CALL REVIEW (170pt) ========================= */
+let crValues = {};
+function renderCallReviewInputs(){
+  const wrap = document.getElementById("crInputs");
+  wrap.innerHTML = CALL_SCORECARD_CATS.map((c,i)=>{
+    crValues[i] = crValues[i] ?? 5;
+    return `<div class="sb-row"><label>${c}</label><input type="range" min="0" max="10" value="${crValues[i]}" data-i="${i}"><span class="val" id="crVal${i}">${crValues[i]}</span></div>`;
+  }).join("");
+  wrap.querySelectorAll("input[type=range]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      crValues[inp.dataset.i] = parseInt(inp.value);
+      document.getElementById("crVal"+inp.dataset.i).textContent = inp.value;
+      updateCrTotal();
+    });
+  });
+  updateCrTotal();
+}
+function updateCrTotal(){
+  document.getElementById("crTotal").textContent = Object.values(crValues).reduce((a,b)=>a+b,0);
+}
+document.getElementById("crSubmit").addEventListener("click",()=>{
+  const total = Object.values(crValues).reduce((a,b)=>a+b,0);
+  const label = document.getElementById("crLabel").value.trim() || ("Call "+(STATE.callReviews.length+1));
+  STATE.callReviews.push({label, total, date:new Date().toISOString().slice(0,10)});
+  persist("call-review-log", STATE.callReviews);
+  document.getElementById("crLabel").value="";
+  renderCallReviewHistory();
+});
+function renderCallReviewHistory(){
+  const list = document.getElementById("crHistoryList");
+  if(!STATE.callReviews.length){
+    list.innerHTML = `<div class="empty-state">No calls reviewed yet.</div>`;
+    drawSparklineGeneric("crSparkline", [], 170);
+    return;
+  }
+  const rev = [...STATE.callReviews].reverse();
+  list.innerHTML = rev.map(s=>`
+    <div class="entry-card" style="padding:10px 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px;">${s.label} <span class="mono" style="color:var(--muted); font-size:11px;">${s.date}</span></span>
+        <span class="mono" style="color:var(--brass); font-size:14px;">${s.total}/170</span>
+      </div>
+    </div>
+  `).join("");
+  drawSparklineGeneric("crSparkline", STATE.callReviews.map(s=>s.total), 170);
+}
+function drawSparklineGeneric(svgId, vals, max){
+  const svg = document.getElementById(svgId);
+  if(!vals.length){ svg.innerHTML = `<text x="10" y="60" fill="#5c6472" font-size="12" font-family="Inter">No history yet</text>`; return; }
+  const w=400,h=120,pad=10,min=0;
+  const step = vals.length>1 ? (w-2*pad)/(vals.length-1) : 0;
+  const pts = vals.map((v,i)=>{ const x=pad+i*step; const y=h-pad-((v-min)/(max-min))*(h-2*pad); return [x,y]; });
+  const path = pts.map((p,i)=> (i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+  const dots = pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="#c9974b"/>`).join("");
+  svg.innerHTML = `<line x1="10" y1="${h-pad}" x2="${w-10}" y2="${h-pad}" stroke="#2c323d"/><path d="${path}" fill="none" stroke="#c9974b" stroke-width="2"/>${dots}`;
+}
+
+/* ========================= RENDER: KPI DASHBOARD ========================= */
+function renderKpis(){
+  renderKpiTable("kpiActivityBody", KPI_ACTIVITY, "act");
+  renderKpiTable("kpiPipelineBody", KPI_PIPELINE, "pipe");
+  renderKpiTable("kpiResultsBody", KPI_RESULTS, "res");
+}
+function renderKpiTable(elId, data, prefix){
+  const tbody = document.getElementById(elId);
+  tbody.innerHTML = data.map((row,i)=>{
+    const key = prefix+i;
+    const val = STATE.kpiActuals[key] || "";
+    return `<tr><td>${row[0]}</td><td style="color:var(--muted); font-size:12.5px;">${row[1]}</td><td class="mono" style="color:var(--brass);">${row[2]}</td>
+      <td><input type="text" class="kpi-input" data-key="${key}" value="${val}" placeholder="—" style="width:90px; background:var(--panel-raised); border:1px solid var(--hairline); color:var(--text); border-radius:3px; padding:5px 8px; font-family:'JetBrains Mono',monospace; font-size:12px;"></td></tr>`;
+  }).join("");
+  tbody.querySelectorAll(".kpi-input").forEach(inp=>inp.addEventListener("change",()=>{
+    STATE.kpiActuals[inp.dataset.key] = inp.value;
+    persist("kpi-actuals", STATE.kpiActuals);
+  }));
+}
+
+/* ========================= RENDER: COMPETENCY LEVELS ========================= */
+function renderLevels(){
+  document.getElementById("levelsContainer").innerHTML = LEVELS.map(l=>`
+    <div class="month-item open" style="margin-bottom:12px;">
+      <div class="month-head" style="cursor:default;">
+        <div class="month-head-left">
+          <div class="month-num display">L${l.n}</div>
+          <div class="month-name">${l.name}</div>
+        </div>
+      </div>
+      <div class="month-body" style="display:block;">
+        <div class="month-body-grid" style="margin-top:6px;">
+          <div>
+            <div class="check-col-title" style="margin-top:0;">Required Skills</div>
+            ${l.skills.map(s=>`<div class="focus-line"><span class="dot off"></span><span>${s}</span></div>`).join("")}
+            <div class="check-col-title">What They Can Do</div>
+            ${l.can.map(s=>`<div class="focus-line"><span class="dot"></span><span>${s}</span></div>`).join("")}
+          </div>
+          <div>
+            <div class="check-col-title" style="margin-top:0;">Common Weaknesses</div>
+            ${l.weak.map(s=>`<div class="focus-line"><span class="dot" style="background:var(--signal);"></span><span>${s}</span></div>`).join("")}
+            <div class="check-col-title">Sales Metrics</div>
+            <p style="font-size:13px; color:var(--muted);">${l.metrics}</p>
+            <div class="check-col-title">What Separates from Next Level</div>
+            <p style="font-size:13px; color:var(--muted);">${l.next}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ========================= RENDER: STRATEGY PLAYBOOK ========================= */
+function renderPlaybook(){
+  document.getElementById("psychDrivers").innerHTML = PSYCH_DRIVERS.map(d=>`<div class="focus-line"><span class="dot"></span><span>${d}</span></div>`).join("");
+  document.getElementById("psychHesitations").innerHTML = PSYCH_HESITATIONS.map(d=>`<div class="focus-line"><span class="dot off"></span><span>${d}</span></div>`).join("");
+  document.getElementById("psychDecision").innerHTML = PSYCH_DECISION.map((d,i)=>`<div class="focus-line"><span class="mono" style="color:var(--brass); width:16px;">${i+1}</span><span>${d}</span></div>`).join("");
+  document.getElementById("psychSegmentBody").innerHTML = PSYCH_SEGMENTS.map(s=>`<tr>${s.map((c,i)=>i===0?`<td><b>${c}</b></td>`:`<td style="color:var(--muted); font-size:12.5px;">${c}</td>`).join("")}</tr>`).join("");
+
+  document.getElementById("careerBody").innerHTML = CAREER_STAGES.map(s=>`<tr><td><b>${s[0]}</b></td><td class="mono" style="color:var(--muted); font-size:12px;">${s[1]}</td><td style="color:var(--muted); font-size:12.5px;">${s[2]}</td><td class="mono" style="font-size:12px; color:var(--brass);">${s[3]}</td><td style="color:var(--signal); font-size:12px;">${s[4]}</td></tr>`).join("");
+  document.getElementById("promotableList").innerHTML = PROMOTABLE.map((p,i)=>`<div class="focus-line"><span class="mono" style="color:var(--brass); width:16px;">${i+1}</span><span>${p}</span></div>`).join("");
+
+  document.getElementById("industryBody").innerHTML = INDUSTRIES.map(r=>`<tr><td><b>${r[0]}</b></td><td class="mono">${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td><td class="mono">${r[4]}</td><td class="mono">${r[5]}</td><td class="mono">${r[6]}</td><td class="mono" style="color:var(--brass); font-weight:700;">${r[6]}</td></tr>`).join("");
+
+  document.getElementById("experienceBody").innerHTML = EXPERIENCE_METHODS.map(m=>`<tr><td>${m[0]}</td><td style="color:var(--success); font-size:12.5px;">${m[1]}</td><td style="color:var(--muted); font-size:12.5px;">${m[2]}</td></tr>`).join("");
+  document.getElementById("scamsList").innerHTML = SCAMS.map(s=>`<div class="focus-line"><span class="dot" style="background:var(--signal);"></span><span>${s}</span></div>`).join("");
+}
+
+/* ========================= RENDER: HABITS ========================= */
+function renderHabits(){
+  document.getElementById("habitsDaily").innerHTML = HABITS_DAILY.map(h=>`<div class="focus-line"><span class="dot"></span><span>${h}</span></div>`).join("");
+  document.getElementById("habitsWeekly").innerHTML = HABITS_WEEKLY.map(h=>`<div class="focus-line"><span class="dot"></span><span>${h}</span></div>`).join("");
+  document.getElementById("habitsMonthly").innerHTML = HABITS_MONTHLY.map(h=>`<div class="focus-line"><span class="dot off"></span><span>${h}</span></div>`).join("");
+  document.getElementById("habitsQuarterly").innerHTML = HABITS_QUARTERLY.map(h=>`<div class="focus-line"><span class="dot off"></span><span>${h}</span></div>`).join("");
+  document.getElementById("habitsMatter").innerHTML = HABITS_MATTER.map(h=>`<div class="focus-line"><span class="dot" style="background:var(--success);"></span><span>${h}</span></div>`).join("");
+  document.getElementById("habitsTheater").innerHTML = HABITS_THEATER.map(h=>`<div class="focus-line"><span class="dot" style="background:var(--signal);"></span><span>${h}</span></div>`).join("");
+
+  const container = document.getElementById("antiHabitsContainer");
+  container.innerHTML = ANTI_HABITS.map((a,i)=>{
+    const checked = STATE.antiHabits[i] ? "checked" : "";
+    return `<label class="check-item" style="padding:10px 0; border-bottom:1px solid var(--hairline-soft);">
+      <input type="checkbox" class="ah-check" data-i="${i}" ${checked}>
+      <span class="txt"><b style="color:var(--text);">${a[0]}</b> — <span style="color:var(--muted);">${a[1]}</span><br><span style="color:var(--brass); font-size:12px;">→ ${a[2]}</span></span>
+    </label>`;
+  }).join("");
+  container.querySelectorAll(".ah-check").forEach(cb=>cb.addEventListener("change",()=>{
+    STATE.antiHabits[cb.dataset.i] = cb.checked;
+    persist("anti-habits-checks", STATE.antiHabits);
+    updateAntiHabitTag();
+  }));
+  updateAntiHabitTag();
+}
+function updateAntiHabitTag(){
+  const done = Object.values(STATE.antiHabits).filter(Boolean).length;
+  document.getElementById("antiHabitTag").textContent = done+"/"+ANTI_HABITS.length+" eliminated";
+}
+
+/* ========================= RENDER: RULES ========================= */
+function renderRules(){
+  document.getElementById("rulesList").innerHTML = RULES.map((r,i)=>`
+    <div class="rule-quote"><span class="rule-num">${String(i+1).padStart(2,"0")}</span>${r}</div>
+  `).join("");
+}
+
+/* ========================= CALLSIGN ========================= */
+const callsignInput = document.getElementById("callsignInput");
+callsignInput.addEventListener("change",()=>{
+  STATE.callsign = callsignInput.value;
+  persist("callsign", STATE.callsign);
+});
+
+/* ========================= INIT ========================= */
+async function startApp(){
+  await loadState();
+  callsignInput.value = STATE.callsign || "";
+  renderMonthSelector();
+  renderDashboard();
+  renderMonths();
+  renderFirst90();
+  renderRoutines();
+  renderBooks();
+  renderRoleplay();
+  renderObjections();
+  renderCallReviewInputs();
+  renderCallReviewHistory();
+  renderKpis();
+  renderJournal();
+  renderScoreboardInputs();
+  renderScoreHistory();
+  renderLevels();
+  renderPlaybook();
+  renderHabits();
+  renderRules();
+}
+async function boot(){
+  const ready = await tryAuthedBoot();
+  if(ready) await startApp();
+  // if not ready, the auth gate is showing — sign-in/sign-up handlers call startApp() themselves
+}
+boot();
+</script>
+</body>
+</html>

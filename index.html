@@ -26,14 +26,14 @@
   html,body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;}
   body{min-height:100vh; padding-bottom:80px;}
   @media (prefers-reduced-motion: reduce){ *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;} }
-
+ 
   ::selection{ background:var(--brass); color:#12141a; }
-
+ 
   .display{ font-family:'Barlow Condensed',sans-serif; font-weight:700; letter-spacing:0.01em; }
   .mono{ font-family:'JetBrains Mono',monospace; }
-
+ 
   a{ color:inherit; }
-
+ 
   /* ===== HEADER ===== */
   header.console{
     border-bottom:1px solid var(--hairline);
@@ -52,7 +52,7 @@
   }
   #callsignInput:focus{ outline:none; border-bottom-color:var(--brass);}
   .storage-badge{ font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:0.06em; color:var(--success); border:1px solid var(--hairline); padding:3px 7px; border-radius:3px; cursor:help; }
-
+ 
   nav.tabs{ display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
   nav.tabs::-webkit-scrollbar{ display:none; }
   nav.tabs button{
@@ -62,12 +62,12 @@
   }
   nav.tabs button:hover{ color:var(--text); }
   nav.tabs button.active{ color:var(--brass); border-bottom-color:var(--brass); }
-
+ 
   main{ max-width:1180px; margin:0 auto; padding:36px clamp(16px,4vw,48px) 0; }
   .view{ display:none; animation:fadeIn .25s ease; }
   .view.active{ display:block; }
   @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
-
+ 
   section.panel{
     background:var(--panel); border:1px solid var(--hairline); border-radius:6px; padding:22px 24px; margin-bottom:20px;
   }
@@ -75,11 +75,11 @@
   .panel-title{ font-size:19px; text-transform:uppercase; letter-spacing:0.04em;}
   .panel-tag{ font-size:10.5px; color:var(--muted); letter-spacing:0.12em; text-transform:uppercase;}
   .eyebrow{ font-size:11px; color:var(--brass); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:6px; font-weight:600;}
-
+ 
   /* ===== DASHBOARD ===== */
   .dash-grid{ display:grid; grid-template-columns: 300px 1fr; gap:20px; }
   @media (max-width:800px){ .dash-grid{ grid-template-columns:1fr; } }
-
+ 
   .gauge-wrap{ display:flex; flex-direction:column; align-items:center; padding:26px 10px 10px;}
   .gauge-figure{ position:relative; width:220px; height:220px;}
   .gauge-label{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
@@ -88,25 +88,25 @@
   .day-counter{ margin-top:18px; text-align:center; }
   .day-counter .n{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--brass); letter-spacing:0.06em;}
   .day-counter .l{ font-size:10px; color:var(--muted); letter-spacing:0.14em; text-transform:uppercase; margin-top:2px;}
-
+ 
   .stat-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px;}
   @media (max-width:700px){ .stat-row{ grid-template-columns:repeat(2,1fr);} }
   .stat-card{ background:var(--panel-raised); border:1px solid var(--hairline); border-radius:5px; padding:14px 16px; }
   .stat-num{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:24px; color:var(--text);}
   .stat-num small{ font-size:13px; color:var(--muted); font-weight:400;}
   .stat-lbl{ font-size:10.5px; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-top:6px;}
-
+ 
   .focus-line{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--hairline-soft); font-size:13.5px;}
   .focus-line:last-child{ border-bottom:none; }
   .dot{ width:7px; height:7px; border-radius:50%; background:var(--brass); flex-shrink:0;}
   .dot.off{ background:var(--hairline);}
-
+ 
   select, .btn-select{
     background:var(--panel-raised); color:var(--text); border:1px solid var(--hairline); border-radius:4px;
     padding:8px 10px; font-family:'Inter',sans-serif; font-size:13px; cursor:pointer;
   }
   select:focus{ outline:1px solid var(--brass); }
-
+ 
   /* ===== CHECKLIST ITEMS ===== */
   .check-item{ display:flex; align-items:flex-start; gap:10px; padding:7px 0; font-size:14px; line-height:1.4; cursor:pointer; }
   .check-item input[type=checkbox]{
@@ -121,7 +121,7 @@
   .check-item input:checked ~ span.txt{ color:var(--muted); text-decoration:line-through; text-decoration-color:var(--hairline);}
   .check-col-title{ font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--brass); margin:18px 0 4px; font-weight:600;}
   .check-col-title:first-child{ margin-top:0; }
-
+ 
   /* ===== MONTH ACCORDION ===== */
   .month-item{ border:1px solid var(--hairline); border-radius:5px; margin-bottom:10px; overflow:hidden; background:var(--panel-raised);}
   .month-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 18px; cursor:pointer; gap:14px;}
@@ -140,7 +140,7 @@
   @media (max-width:700px){ .month-body-grid{ grid-template-columns:1fr; } }
   .book-chip{ display:inline-block; font-size:11px; font-family:'JetBrains Mono',monospace; padding:3px 8px; border:1px solid var(--hairline); border-radius:3px; color:var(--muted); margin:2px 6px 2px 0;}
   .book-chip.done{ border-color:var(--success); color:var(--success); }
-
+ 
   /* ===== TABLE (roleplay/books) ===== */
   .filter-row{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center;}
   table.data-table{ width:100%; border-collapse:collapse; font-size:13.5px;}
@@ -167,14 +167,14 @@
   .score-input:focus{ outline:1px solid var(--brass); }
   .diff-track{ width:60px; height:5px; background:var(--hairline); border-radius:3px; overflow:hidden; display:inline-block; vertical-align:middle;}
   .diff-fill{ height:100%; background:var(--brass);}
-
+ 
   /* ===== BOOK STATUS SELECT ===== */
   .status-select{ font-size:12px; padding:5px 8px; }
   .tier-badge{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:2px 7px; border-radius:3px; font-family:'JetBrains Mono',monospace;}
   .tier-1{ background:rgba(201,151,75,0.18); color:var(--brass);}
   .tier-2{ background:rgba(143,152,168,0.15); color:var(--muted);}
   .tier-3{ background:rgba(143,152,168,0.08); color:var(--muted-dim, #5c6472);}
-
+ 
   /* ===== JOURNAL ===== */
   .journal-form{ display:grid; grid-template-columns:1fr 1fr; gap:14px 20px; margin-bottom:18px;}
   @media (max-width:700px){ .journal-form{ grid-template-columns:1fr; } }
@@ -187,7 +187,7 @@
   }
   .field input:focus, .field textarea:focus{ outline:1px solid var(--brass); }
   .field textarea{ min-height:64px; }
-
+ 
   .btn-primary{
     background:var(--brass); color:#12141a; border:none; border-radius:4px; padding:11px 22px;
     font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:14.5px; letter-spacing:0.05em; text-transform:uppercase;
@@ -199,7 +199,7 @@
     font-size:12px; cursor:pointer; font-family:'Inter',sans-serif;
   }
   .btn-ghost:hover{ color:var(--text); border-color:var(--muted); }
-
+ 
   .entry-card{ border:1px solid var(--hairline); border-radius:5px; padding:14px 16px; margin-bottom:10px; background:var(--panel-raised);}
   .entry-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
   .entry-date{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--brass);}
@@ -207,7 +207,7 @@
   .entry-body{ font-size:13px; color:var(--muted); line-height:1.5;}
   .entry-body b{ color:var(--text); font-weight:500;}
   .empty-state{ color:var(--muted); font-size:13px; padding:20px 0; text-align:center; border:1px dashed var(--hairline); border-radius:5px;}
-
+ 
   /* ===== SCOREBOARD ===== */
   .sb-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px 24px; margin-bottom:18px;}
   @media (max-width:700px){ .sb-grid{ grid-template-columns:1fr; } }
@@ -215,24 +215,24 @@
   .sb-row label{ font-size:13px; color:var(--muted); flex:1;}
   .sb-row input[type=range]{ width:110px; accent-color:var(--brass); }
   .sb-row .val{ font-family:'JetBrains Mono',monospace; font-size:13px; width:34px; text-align:right; color:var(--brass);}
-
+ 
   .level-track{ display:flex; gap:4px; margin-top:10px;}
   .level-seg{ flex:1; height:8px; border-radius:2px; background:var(--hairline);}
   .level-seg.filled{ background:var(--brass); }
-
+ 
   footer{ text-align:center; padding:36px 20px 10px; color:var(--muted-dim,#5c6472); font-size:11px; letter-spacing:0.08em;}
-
+ 
   .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:20px;}
   @media (max-width:800px){ .two-col{ grid-template-columns:1fr; } }
-
+ 
   .rule-quote{ font-family:'Barlow Condensed',sans-serif; font-size:17px; color:var(--text); border-left:2px solid var(--brass); padding:8px 0 8px 16px; margin-bottom:10px; }
   .rule-num{ color:var(--brass); font-family:'JetBrains Mono',monospace; font-size:12px; margin-right:8px;}
 </style>
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
+ 
+ 
 <div id="authGate" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(18,20,26,0.96); align-items:center; justify-content:center; flex-direction:column; padding:20px;">
   <div style="width:100%; max-width:360px; background:#1b1f27; border:1px solid #2c323d; border-radius:6px; padding:28px 26px;">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
@@ -253,7 +253,7 @@
     <p id="authStatus" style="font-size:12px; color:#e2542a; margin-top:14px; min-height:16px;"></p>
   </div>
 </div>
-
+ 
 <header class="console">
   <div class="console-top">
     <div class="brand-block">
@@ -292,9 +292,9 @@
     <button data-view="rules">Field Rules</button>
   </nav>
 </header>
-
+ 
 <main>
-
+ 
   <!-- ================= DASHBOARD ================= -->
   <div class="view active" id="view-dashboard">
     <div class="dash-grid">
@@ -314,7 +314,7 @@
           <div class="l">Since campaign start</div>
         </div>
       </section>
-
+ 
       <div>
         <div class="stat-row">
           <div class="stat-card">
@@ -334,7 +334,7 @@
             <div class="stat-lbl">Journal Streak</div>
           </div>
         </div>
-
+ 
         <section class="panel" style="margin-bottom:0;">
           <div class="panel-head">
             <div class="panel-title display">This Month's Focus</div>
@@ -345,7 +345,7 @@
         </section>
       </div>
     </div>
-
+ 
     <section class="panel">
       <div class="panel-head">
         <div class="panel-title display">Competency Level</div>
@@ -355,7 +355,7 @@
       <p style="font-size:12.5px; color:var(--muted); margin-top:10px;">Derived from your most recent monthly scoreboard total. Log a scoreboard entry to calibrate.</p>
     </section>
   </div>
-
+ 
   <!-- ================= FIRST 90 DAYS ================= -->
   <div class="view" id="view-first90">
     <section class="panel">
@@ -377,7 +377,7 @@
       <div id="milestonesContainer"></div>
     </section>
   </div>
-
+ 
   <!-- ================= ROADMAP (existing) ================= -->
   <div class="view" id="view-roadmap">
     <section class="panel">
@@ -388,7 +388,7 @@
       <div id="monthsContainer"></div>
     </section>
   </div>
-
+ 
   <!-- ================= ROUTINES ================= -->
   <div class="view" id="view-routines">
     <section class="panel">
@@ -413,7 +413,7 @@
       </section>
     </div>
   </div>
-
+ 
   <!-- ================= JOURNAL (existing) ================= -->
   <div class="view" id="view-journal">
     <section class="panel">
@@ -431,7 +431,7 @@
       </div>
       <button class="btn-primary" id="jSubmit">Log Today's Entry</button>
     </section>
-
+ 
     <section class="panel">
       <div class="panel-head">
         <div class="panel-title display">Entry History</div>
@@ -440,7 +440,7 @@
       <div id="journalList"></div>
     </section>
   </div>
-
+ 
   <!-- ================= OBJECTIONS ================= -->
   <div class="view" id="view-objections">
     <section class="panel">
@@ -452,7 +452,7 @@
       <div id="objectionsContainer"></div>
     </section>
   </div>
-
+ 
   <!-- ================= CALL REVIEW ================= -->
   <div class="view" id="view-callreview">
     <div class="two-col">
@@ -472,7 +472,7 @@
       </section>
     </div>
   </div>
-
+ 
   <!-- ================= ROLEPLAY (existing) ================= -->
   <div class="view" id="view-roleplay">
     <section class="panel">
@@ -504,7 +504,7 @@
       </table>
     </section>
   </div>
-
+ 
   <!-- ================= KPI DASHBOARD ================= -->
   <div class="view" id="view-kpis">
     <section class="panel">
@@ -529,7 +529,7 @@
       <table class="data-table"><thead><tr><th>Metric</th><th>Why It Matters</th><th style="width:110px;">Target</th><th style="width:110px;">Your Current</th></tr></thead><tbody id="kpiResultsBody"></tbody></table>
     </section>
   </div>
-
+ 
   <!-- ================= BOOKS (existing) ================= -->
   <div class="view" id="view-books">
     <section class="panel">
@@ -548,7 +548,7 @@
       </table>
     </section>
   </div>
-
+ 
   <!-- ================= SCOREBOARD ================= -->
   <div class="view" id="view-scoreboard">
     <div class="two-col">
@@ -568,7 +568,7 @@
       </section>
     </div>
   </div>
-
+ 
   <!-- ================= COMPETENCY LEVELS ================= -->
   <div class="view" id="view-levels">
     <section class="panel">
@@ -579,9 +579,16 @@
       <div id="levelsContainer"></div>
     </section>
   </div>
-
+ 
   <!-- ================= STRATEGY PLAYBOOK ================= -->
   <div class="view" id="view-playbook">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title display">Sellamade Frameworks</div>
+        <span class="panel-tag">Referenced throughout the roadmap</span>
+      </div>
+      <div id="frameworksContainer"></div>
+    </section>
     <section class="panel">
       <div class="panel-head"><div class="panel-title display">Buyer Psychology</div></div>
       <div class="two-col">
@@ -599,19 +606,19 @@
       <div class="check-col-title" style="margin-top:20px;">Differences by Segment</div>
       <table class="data-table"><thead><tr><th>Segment</th><th>Decision Process</th><th>Key Drivers</th><th>Key Objections</th><th>How to Sell</th></tr></thead><tbody id="psychSegmentBody"></tbody></table>
     </section>
-
+ 
     <section class="panel">
       <div class="panel-head"><div class="panel-title display">Career Roadmap</div></div>
       <table class="data-table"><thead><tr><th>Stage</th><th style="width:90px;">Experience</th><th>Responsibilities</th><th>Compensation</th><th>Mistakes to Avoid</th></tr></thead><tbody id="careerBody"></tbody></table>
       <div class="check-col-title" style="margin-top:18px;">How to Become Promotable</div>
       <div id="promotableList"></div>
     </section>
-
+ 
     <section class="panel">
       <div class="panel-head"><div class="panel-title display">High-Ticket Industry Comparison</div></div>
       <table class="data-table"><thead><tr><th>Industry</th><th>Earning</th><th>Difficulty</th><th>Demand</th><th>Growth</th><th>Remote</th><th>Stability</th><th>Entry Barrier</th><th style="width:60px;">Total</th></tr></thead><tbody id="industryBody"></tbody></table>
     </section>
-
+ 
     <section class="panel">
       <div class="panel-head"><div class="panel-title display">How to Get Real Experience</div></div>
       <table class="data-table"><thead><tr><th>Method</th><th>Pros</th><th>Cons</th></tr></thead><tbody id="experienceBody"></tbody></table>
@@ -619,7 +626,7 @@
       <div id="scamsList"></div>
     </section>
   </div>
-
+ 
   <!-- ================= HABITS ================= -->
   <div class="view" id="view-habits">
     <section class="panel">
@@ -645,7 +652,7 @@
       <div id="antiHabitsContainer"></div>
     </section>
   </div>
-
+ 
   <!-- ================= RULES (existing) ================= -->
   <div class="view" id="view-rules">
     <section class="panel">
@@ -656,11 +663,11 @@
       <div id="rulesList" style="columns:1; column-gap:32px;"></div>
     </section>
   </div>
-
+ 
 </main>
-
+ 
 <footer>SELLAMADE · PROGRESS SAVES AUTOMATICALLY TO YOUR ACCOUNT</footer>
-
+ 
 <script>
 /* ========================= DATA ========================= */
 const MONTHS = [
@@ -669,7 +676,7 @@ const MONTHS = [
  books:["SPIN Selling","How to Win Friends and Influence People"],
  kpis:["10 practice discovery calls","5 recorded roleplays","3 book chapters read","Discovery question bank built (20+ questions)"],
  tests:["Roleplay a discovery call and score 70%+ on discovery depth","Write out your company's value proposition in 30 seconds"],
- grad:["Can ask SPIN questions naturally","Can maintain a consultative conversation without pitching","Understands the difference between surface problems and deep pain"]},
+ grad:["Can ask CORE discovery questions naturally","Can maintain a consultative conversation without pitching","Understands the difference between surface problems and deep pain"]},
 {n:2,name:"Communication Mastery",goal:"Develop elite-level communication skills — listening, questioning, tone, and executive presence.",
  skills:["Active listening (advanced)","Questioning technique","Tone and pace control","Concise communication","Executive communication basics"],
  books:["SPIN Selling","New Sales. Simplified."],
@@ -677,16 +684,16 @@ const MONTHS = [
  tests:["Record a 10-minute discovery call and score 80%+ on listening and questioning","Summarize a complex business problem in 30 seconds"],
  grad:["Demonstrates active listening (reflects, clarifies, asks follow-ups)","Communicates concisely and clearly","Maintains confident, consultative tone"]},
 {n:3,name:"Deep Discovery",goal:"Master the art of uncovering deep pain, business impact, and personal motivations.",
- skills:["SPIN questioning mastery","Implication questions","Need-payoff questions","Business impact discovery","Personal motivation discovery"],
+ skills:["CORE questioning mastery","Ripple questions","Elevation questions","Business impact discovery","Personal motivation discovery"],
  books:["Gap Selling","Crucial Conversations"],
- kpis:["5 deep discovery roleplays","20 implication questions written","20 need-payoff questions written","Discovery question map created"],
+ kpis:["5 deep discovery roleplays","20 ripple questions written","20 elevation questions written","Discovery question map created"],
  tests:["Roleplay a discovery call and score 80%+ on discovery depth","Given a surface problem, identify 3 implications and 3 business impacts"],
  grad:["Consistently uncovers deep pain","Can articulate business impact of problems","Understands personal motivations of buyers"]},
 {n:4,name:"Qualification Mastery",goal:"Learn to qualify ruthlessly — identifying real opportunities and walking away from bad ones.",
- skills:["BANT qualification","MEDDIC qualification","Decision process mapping","Risk identification","Opportunity scoring"],
+ skills:["VALID qualification check","Deal fit scoring","Decision process mapping","Risk identification","Opportunity scoring"],
  books:["The Qualified Sales Leader","Gap Selling"],
  kpis:["Qualification checklist created","All pipeline deals scored","3 deals disqualified","Decision process mapped for 5 deals"],
- tests:["Given a prospect scenario, determine if it's a qualified opportunity (80% accuracy)","Create a MEDDIC assessment for a deal (90% completeness)"],
+ tests:["Given a prospect scenario, determine if it's a qualified opportunity (80% accuracy)","Create a VALID Check assessment for a deal (90% completeness)"],
  grad:["Consistently qualifies opportunities correctly","Walks away from bad deals","Understands decision processes and stakeholders"]},
 {n:5,name:"Objection Handling Mastery",goal:"Master objection diagnosis and response — moving from reactive to proactive.",
  skills:["Objection diagnosis","Questioning to uncover real objections","Reframing objections","Handling price objections","Handling timing objections","Handling authority objections"],
@@ -701,10 +708,10 @@ const MONTHS = [
  tests:["Roleplay a full sales conversation from discovery to close (80% score)","Given a scenario, choose the appropriate closing technique (90% accuracy)"],
  grad:["Closes confidently and appropriately","Uses multiple closing techniques","Knows when not to close"]},
 {n:7,name:"Negotiation Mastery",goal:"Develop sophisticated negotiation skills — understanding value, leverage, and trade-offs.",
- skills:["BATNA","ZOPA","Anchoring","Concessions","Leverage","Trade-offs","Package negotiation"],
+ skills:["Walk-Away Line","Deal Zone","Anchoring","Concessions","Leverage","Trade-offs","Package negotiation"],
  books:["Never Split the Difference","Bargaining for Advantage"],
  kpis:["20 negotiation roleplays","10 negotiation recordings","Negotiation template created","3 real negotiations documented"],
- tests:["Roleplay a negotiation and achieve favorable terms (80% score)","Given a scenario, identify BATNA, ZOPA, and leverage (90% accuracy)"],
+ tests:["Roleplay a negotiation and achieve favorable terms (80% score)","Given a scenario, identify your Walk-Away Line, Deal Zone, and leverage (90% accuracy)"],
  grad:["Negotiates confidently without discounting","Understands and uses leverage","Maintains relationships while negotiating"]},
 {n:8,name:"Prospecting & Pipeline",goal:"Build a consistent, predictable prospecting system.",
  skills:["Cold calling","Cold email","LinkedIn prospecting","Referral generation","Pipeline management","Follow-up systems"],
@@ -719,7 +726,7 @@ const MONTHS = [
  tests:["Roleplay an executive conversation and score 80%+ on executive presence","Given an enterprise scenario, create a stakeholder map and account plan (90% completeness)"],
  grad:["Comfortable communicating with executives","Understands enterprise buying dynamics","Can navigate multi-stakeholder deals"]},
 {n:10,name:"Advanced Persuasion",goal:"Master advanced persuasion and influence techniques ethically.",
- skills:["Pre-suasion","Framing","Anchoring","Social proof","Authority","Loss aversion","Storytelling","Status and identity"],
+ skills:["Primer Selling","Framing","Anchoring","Social proof","Authority","Loss aversion","Storytelling","Status and identity"],
  books:["Pre-Suasion","Thinking, Fast and Slow"],
  kpis:["20 persuasion roleplays","10 persuasive stories crafted","Persuasion playbook created","5 persuasion techniques applied in real conversations"],
  tests:["Roleplay a persuasive conversation and score 80%+ on ethical persuasion","Given a scenario, identify appropriate persuasion techniques (90% accuracy)"],
@@ -737,7 +744,7 @@ const MONTHS = [
  tests:["Complete a full sales cycle roleplay (90% score)","Coach a junior salesperson effectively (85% score)","Present your sales methodology (90% completeness)"],
  grad:["Demonstrates mastery of all skills","Consistently performs at a high level","Can teach others","Has a personal sales methodology"]}
 ];
-
+ 
 const BOOKS = [
  {id:"b1",title:"SPIN Selling",author:"Neil Rackham",tier:1},
  {id:"b2",title:"The Qualified Sales Leader",author:"John McMahon",tier:1},
@@ -757,9 +764,9 @@ const BOOKS = [
  {id:"b16",title:"Predictably Irrational",author:"Dan Ariely",tier:3},
  {id:"b17",title:"Storyworthy",author:"Matthew Dicks",tier:3},
  {id:"b18",title:"Getting to Yes",author:"Fisher & Ury",tier:3},
- {id:"b19",title:"MEDDIC",author:"Various",tier:3}
+ {id:"b19",title:"Qualification Frameworks (MEDDIC, BANT, etc.)",author:"Industry standard — research online",tier:3}
 ];
-
+ 
 const ROLEPLAY = [
 [1,1,"Curious prospect","Small business owner",1],[2,1,"Friendly prospect","Mid-level manager",2],
 [3,1,"Budget-conscious prospect","Small business owner",2],[4,1,"Time-pressed prospect","Busy executive",2],
@@ -787,9 +794,34 @@ const ROLEPLAY = [
 [47,4,"Deal with unreasonable demands","Enterprise buyer",9],[48,4,"Multi-year, multi-million deal","Enterprise CEO",10],
 [49,4,"Turnaround situation","Company in crisis",9],[50,4,"Ultimate enterprise deal","Fortune 500 board",10]
 ].map(r=>({id:r[0],level:r[1],name:r[2],persona:r[3],diff:r[4]}));
-
+ 
 const SCORE_CATS = ["Skill score","Knowledge score","Call performance","Close rate","Pipeline performance","Communication","Negotiation","Objection handling","Confidence","Consistency"];
-
+ 
+const FRAMEWORKS = [
+ {name:"CORE Discovery", use:"Uncovering pain in a sales conversation", stages:[
+   ["C — Context","Understand their current situation, workflow, and setup before diagnosing anything."],
+   ["O — Obstacle","Identify the specific problem getting in their way."],
+   ["R — Ripple","Surface the downstream cost — what this problem is quietly costing them."],
+   ["E — Elevation","Connect solving it to the outcome they actually want."]
+ ]},
+ {name:"The VALID Check", use:"Qualifying whether an opportunity is worth pursuing", stages:[
+   ["V — Value seen","Do they actually see the value in solving this?"],
+   ["A — Authority mapped","Do you know who really makes this decision?"],
+   ["L — Level of urgency","How painful and time-sensitive is this for them?"],
+   ["I — Investment ready","Is there real budget, or a path to one?"],
+   ["D — Decision path clear","Do you know their process and timeline to a yes?"]
+ ]},
+ {name:"Walk-Away Line & Deal Zone", use:"Preparing for any negotiation", stages:[
+   ["Walk-Away Line","The worst deal you'd still accept — know this before you negotiate, not during."],
+   ["Deal Zone","The range where both sides could plausibly agree — the space you're actually negotiating inside."]
+ ]},
+ {name:"Primer Selling", use:"Setting up a conversation before you make the ask", stages:[
+   ["Frame first","What someone focuses on right before a decision shapes how they see it — set that focus deliberately."],
+   ["Then ask","Only make the specific ask once the frame is set, not before."]
+ ]}
+];
+ 
+ 
 const RULES = [
 "Never pitch before understanding the problem.","Don't confuse interest with intent.","Don't chase prospects who don't have a problem.",
 "Never discount before understanding the objection.","The goal isn't to convince everyone.","Control the process, not the buyer.",
@@ -809,29 +841,29 @@ const RULES = [
 "Don't confuse activity with progress.","Build a personal brand — people buy from people they trust.","Always be prospecting, even when busy closing.",
 "Communicate clearly — avoid jargon and buzzwords.","Remember that you're creating value — act like it."
 ];
-
+ 
 /* ---- First 30/90 Days ---- */
 const WEEK1_DAYS = [
  {d:1,tasks:["Read SPIN Selling (Ch 1–2)","Practice basic discovery questions (30 min)","Record yourself asking 10 discovery questions","Review and self-critique"]},
- {d:2,tasks:["Read SPIN Selling (Ch 3)","Practice Situation questions (30 min)","Record yourself asking Situation questions","Review and self-critique"]},
- {d:3,tasks:["Read SPIN Selling (Ch 4)","Practice Problem questions (30 min)","Record yourself asking Problem questions","Review and self-critique"]},
- {d:4,tasks:["Read SPIN Selling (Ch 5)","Practice Implication questions (30 min)","Record yourself asking Implication questions","Review and self-critique"]},
- {d:5,tasks:["Read SPIN Selling (Ch 6)","Practice Need-payoff questions (30 min)","Record yourself asking Need-payoff questions","Review and self-critique"]},
- {d:6,tasks:["Read How to Win Friends and Influence People (Part 1)","Practice active listening (30 min)","Roleplay a full SPIN conversation","Record and review"]},
+ {d:2,tasks:["Read SPIN Selling (Ch 3)","Practice Context questions (30 min)","Record yourself asking Context questions","Review and self-critique"]},
+ {d:3,tasks:["Read SPIN Selling (Ch 4)","Practice Obstacle questions (30 min)","Record yourself asking Obstacle questions","Review and self-critique"]},
+ {d:4,tasks:["Read SPIN Selling (Ch 5)","Practice Ripple questions (30 min)","Record yourself asking Ripple questions","Review and self-critique"]},
+ {d:5,tasks:["Read SPIN Selling (Ch 6)","Practice Elevation questions (30 min)","Record yourself asking Elevation questions","Review and self-critique"]},
+ {d:6,tasks:["Read How to Win Friends and Influence People (Part 1)","Practice active listening (30 min)","Roleplay a full CORE discovery conversation","Record and review"]},
  {d:7,tasks:["Review the week's learning","Complete daily journal entries","Set goals for next week","Rest and reflect"]}
 ];
 const WEEKS234 = [
- {w:"Week 2 — Discovery Practice",focus:"Asking natural, conversational SPIN questions",routine:["Read 30 min (SPIN Selling)","Practice SPIN questions (15 min)","Roleplay discovery call (15 min)","Record and review (10 min)","Journal (5 min)"]},
+ {w:"Week 2 — Discovery Practice",focus:"Asking natural, conversational CORE questions",routine:["Read 30 min (SPIN Selling)","Practice CORE discovery questions (15 min)","Roleplay discovery call (15 min)","Record and review (10 min)","Journal (5 min)"]},
  {w:"Week 3 — Qualification Practice",focus:"Identifying qualified opportunities",routine:["Read 30 min (SPIN Selling)","Practice qualification questions (15 min)","Roleplay qualification conversation (15 min)","Record and review (10 min)","Journal (5 min)"]},
- {w:"Week 4 — Integration",focus:"Integrating discovery and qualification",routine:["Review SPIN concepts (15 min)","Roleplay full discovery call (30 min)","Record and review (15 min)","Practice qualification (10 min)","Journal (5 min)"]}
+ {w:"Week 4 — Integration",focus:"Integrating discovery and qualification",routine:["Review CORE discovery concepts (15 min)","Roleplay full discovery call (30 min)","Record and review (15 min)","Practice qualification (10 min)","Journal (5 min)"]}
 ];
 const MILESTONES_90 = [
  {month:"End of Month 1",items:["Completed SPIN Selling and How to Win Friends","20+ recorded practice calls","Discovery question bank built","Basic qualification skills","Can run a basic discovery call","70%+ on discovery roleplay","10+ roleplays completed"]},
  {month:"End of Month 2",items:["Completed New Sales. Simplified.","Advanced communication skills","Executive communication basics","Can summarize complex situations concisely","80%+ on communication assessment","15+ recorded practice calls"]},
  {month:"End of Month 3",items:["Completed Gap Selling","Deep discovery skills","Can uncover business impact","Understands personal motivations","80%+ on discovery depth assessment","20+ deep discovery roleplays","Discovery question map created"]},
- {month:"End of Month 4",items:["Completed The Qualified Sales Leader","Qualification mastery (BANT/MEDDIC)","Can identify and walk away from bad deals","Understands decision processes","80%+ on qualification assessment","All pipeline deals scored","3+ deals disqualified"]}
+ {month:"End of Month 4",items:["Completed The Qualified Sales Leader","Qualification mastery (the VALID Check)","Can identify and walk away from bad deals","Understands decision processes","80%+ on qualification assessment","All pipeline deals scored","3+ deals disqualified"]}
 ];
-
+ 
 /* ---- Routines ---- */
 const DAILY_ROUTINES = {
  min:[["5 min","Reading","Read a sales book or article"],["10 min","Drill","Practice one specific skill (discovery questions, objections, etc.)"],["5 min","Recording","Record yourself practicing"],["5 min","Review","Listen to your recording and self-critique"],["5 min","Reflection","Journal about what you learned and what to improve"]],
@@ -840,7 +872,7 @@ const DAILY_ROUTINES = {
 };
 const WEEKLY_ROUTINE = [["1 hour","Roleplay","Practice scenarios with a partner or coach"],["1 hour","Call review","Analyze your own calls or study public sales calls"],["1 hour","Prospecting practice","Make practice cold calls, write emails"],["30 min","Reading","Continue sales education"],["30 min","Pipeline review","Review all active deals"],["30 min","Goal setting","Set goals for the coming week"],["30 min","Reflection","Review progress and identify improvement areas"]];
 const MONTHLY_ROUTINE = [["1 hour","Skill assessment","Score yourself on the competency framework"],["1 hour","Deep roleplay","Practice complex scenarios"],["1 hour","Book completion","Finish reading a book and extract key lessons"],["1 hour","Pipeline review","Comprehensive pipeline analysis"],["1 hour","Goal review","Review monthly goals and set new ones"],["30 min","Call review","Analyze calls for patterns"],["30 min","Reflection","Review journal entries and identify themes"]];
-
+ 
 /* ---- Objections (3 fully detailed in source doc) ---- */
 const OBJECTIONS = [
  {title:'"Too Expensive"', means:["I don't see the value","I don't have the budget","I'm comparing to something cheaper","I want a discount","I don't believe this will solve my problem"],
@@ -856,10 +888,10 @@ const OBJECTIONS = [
   ask:["What would your boss want to know?","How do you think they'll respond?","What would make it easy for you to present this?","Would it be helpful if we prepared something together?"],
   example:"That's completely understandable. In complex decisions, multiple stakeholders are usually involved. What do you think your boss's key concerns might be?"}
 ];
-
+ 
 /* ---- Call Scorecard (170 pt) ---- */
 const CALL_SCORECARD_CATS = ["Opening","Rapport","Agenda","Question quality","Listening","Discovery depth","Pain discovery","Business impact","Qualification","Value creation","Objection handling","Control","Tonality","Confidence","Clarity","Closing","Next steps"];
-
+ 
 /* ---- KPI Dashboard ---- */
 const KPI_ACTIVITY = [
  ["Calls made","Indicates prospecting effort","20-50/day"],["Conversations","Indicates connect rate","25-50% of calls"],
@@ -874,7 +906,7 @@ const KPI_PIPELINE = [
 const KPI_RESULTS = [
  ["Revenue","The bottom line","Quota"],["Win rate","Competitiveness","20-40%"],["Quota attainment","Performance","100%+"]
 ];
-
+ 
 /* ---- Competency Levels 1-5 ---- */
 const LEVELS = [
 {n:1,name:"Foundation",skills:["Basic discovery","Active listening (basic)","Clear communication","Basic qualification","Follow-up discipline"],
@@ -887,12 +919,12 @@ const LEVELS = [
  weak:["Inconsistent discovery depth","Weak qualification (chasing bad deals)","Over-reliance on a single closing technique","Poor at navigating complex buying processes","Weak negotiation skills"],
  metrics:"Consistent meeting booking · 15-25% close rate · Growing pipeline",
  next:"Multi-stakeholder management, advanced objection handling, strategic thinking, executive communication, consistent performance"},
-{n:3,name:"Strong",skills:["Deep discovery (consequences, motivations, decision process)","Strong qualification (BANT + Risk)","Advanced objection handling","Multiple closing techniques","Negotiation fundamentals","Executive communication"],
+{n:3,name:"Strong",skills:["Deep discovery (consequences, motivations, decision process)","Strong qualification (VALID Check + Risk)","Advanced objection handling","Multiple closing techniques","Negotiation fundamentals","Executive communication"],
  can:["Navigate complex buying processes","Handle enterprise objections","Negotiate without excessive discounting","Communicate with executives","Manage multi-stakeholder deals"],
  weak:["Inconsistent executive communication","Occasional qualification failures","Limited negotiation sophistication","Still learning enterprise dynamics"],
  metrics:"25-35% close rate · Shorter sales cycles · Larger average deal size · High win rate on qualified opps",
  next:"Consistent executive-level communication, strategic account planning, advanced negotiation, political navigation, deal orchestration"},
-{n:4,name:"Advanced",skills:["Enterprise discovery (org dynamics, political landscape)","Advanced qualification (MEDDIC/MEDDPICC)","Expert objection handling","Advanced negotiation (BATNA, ZOPA, trade-offs)","Deal orchestration","Strategic account management"],
+{n:4,name:"Advanced",skills:["Enterprise discovery (org dynamics, political landscape)","Advanced qualification (enterprise-grade VALID Check)","Expert objection handling","Advanced negotiation (Walk-Away Line, Deal Zone, trade-offs)","Deal orchestration","Strategic account management"],
  can:["Navigate complex enterprise deals","Negotiate multi-million dollar contracts","Build executive relationships","Manage multiple stakeholders","Create strategic account plans"],
  weak:["Occasional strategic blind spots","Can be overconfident","May struggle with very complex negotiations"],
  metrics:"35-45% close rate on qualified deals · Large average deal size · Consistent quota attainment · Strong forecast accuracy",
@@ -903,7 +935,7 @@ const LEVELS = [
  metrics:"50%+ close rate on qualified deals · Seven-figure deals · Predictable, consistent performance · Referral-driven pipeline",
  next:"Consistency, ability to train others, strategic thinking, emotional mastery, industry influence — this is the top of the framework"}
 ];
-
+ 
 /* ---- Buyer Psychology ---- */
 const PSYCH_DRIVERS = ["Problem solving — they have a pain and want it solved","Opportunity capture — they see a chance to improve","Risk reduction — they want to avoid negative outcomes","Status elevation — they want to look good","Identity alignment — they want to be consistent with who they are"];
 const PSYCH_HESITATIONS = ["Risk perception — fear of making a wrong decision","Uncertainty — not sure if this will work","Trust deficit — don't fully trust you or your company","Internal politics — worried about how others will react","Loss aversion — more afraid of losing than excited about gaining","Decision fatigue — too many decisions, too little energy","Opportunity cost — what else could they do with this money?","Status quo bias — change is hard, staying the same is easy"];
@@ -915,7 +947,7 @@ const PSYCH_SEGMENTS = [
  ["Enterprise","Complex, committee, slow","Strategic goals, risk reduction","Politics, complexity","Strategic selling, coalition building"],
  ["Executive buyers","High-level, outcome-focused","Strategic impact, risk","Credibility, ROI","Executive communication, business case"]
 ];
-
+ 
 /* ---- Career Roadmap ---- */
 const CAREER_STAGES = [
  ["Sales Development / BDR","0-2 yrs","Prospecting, meeting booking","$50-80K base + $20-30K commission","Focusing on activity over quality, not learning from rejection"],
@@ -945,7 +977,7 @@ const EXPERIENCE_METHODS = [
  ["Shadowing salespeople","Learn from experts","Hard to arrange"]
 ];
 const SCAMS = ["\"Pay to access our leads\" — they make money from you, not from sales","\"Commission-only but you must buy inventory\" — they're selling products to you","\"Make $100K in your first month\" — unrealistic promises","\"No experience needed\" for high-ticket sales — it requires real skills","\"Work from home, flexible hours\" (vague) — often MLM or scam","\"We'll teach you our proven system\" (expensive training) — they profit from training, not sales","\"Unlimited earning potential\" with no base — often means you won't earn anything"];
-
+ 
 /* ---- Habits ---- */
 const HABITS_DAILY = ["Prospecting — pipeline is the lifeblood of sales (1-2 hrs)","Practice — deliberate practice improves skills (30 min)","Review — learn from your own calls (15 min)","Pipeline review — know where every deal stands (15 min)","Exercise — maintains energy and confidence (30 min)","Sleep — cognitive function and emotional control (7-8 hrs)"];
 const HABITS_WEEKLY = ["Goal setting — focuses effort (30 min)","Call review — identifies patterns (1 hr)","Skill development — continuous improvement (2-3 hrs)","Relationship building — maintains network (1 hr)","Reflection — integrates learning (30 min)"];
@@ -962,7 +994,7 @@ const ANTI_HABITS = [
  ["Fear of asking for money","Deals don't close themselves","Practice asking for commitment"],
  ["Avoiding difficult conversations","Problems fester, deals stall","Address issues directly and early"],
  ["Poor follow-up","Deals die in the pipeline","Create a disciplined follow-up system"],
- ["Not qualifying","Wasting time on bad deals","Implement BANT/MEDDIC on every deal"],
+ ["Not qualifying","Wasting time on bad deals","Run the VALID Check on every deal"],
  ["Chasing bad opportunities","Resources wasted, pipeline inflated","Walk away from unqualified deals"],
  ["Taking rejection personally","Emotional damage, reduced confidence","See rejection as information"],
  ["Being needy","Repels buyers, signals low value","Approach from a position of strength"],
@@ -973,8 +1005,8 @@ const ANTI_HABITS = [
  ["Neglecting self-care","Burnout, poor performance","Prioritize sleep, exercise, rest"],
  ["Comparing yourself to others","Destroys confidence","Focus on your own progress"]
 ];
-
-
+ 
+ 
 /* ========================= SUPABASE (optional hosted database) =========================
    Fill these two in to switch this file from local/Claude storage over to your own
    Supabase project. Leave blank to keep using the built-in Claude/local storage. */
@@ -985,14 +1017,14 @@ const sb = (SUPABASE_CONFIGURED && typeof window.supabase !== "undefined")
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
 let sbUser = null;
-
+ 
 /* ========================= STORAGE LAYER =========================
    Priority: Supabase (your own database, if configured + signed in)
           -> window.storage (Claude in-app preview)
           -> localStorage (file opened directly in a browser) */
 const LS_PREFIX = "campaign-log:";
 const hasCloudStorage = typeof window.storage !== "undefined" && typeof window.storage.get === "function";
-
+ 
 async function storageGet(key){
   if(sb && sbUser){
     try{
@@ -1027,12 +1059,12 @@ async function storageSet(key, value){
     return {key, value, shared:false};
   }catch(e){ console.warn("local storage save failed:", key); return null; }
 }
-
+ 
 let STATE = {
   roadmap:{}, books:{}, roleplay:{}, journal:[], scoreboard:[], currentMonth:1, callsign:"", startDate:null,
   week1:{}, milestones:{}, objectionPractice:{}, callReviews:[], kpiActuals:{}, antiHabits:{}, routinePref:"std"
 };
-
+ 
 async function loadState(){
   const keys = ["roadmap-checks","books-status","roleplay-progress","journal-entries","scoreboard-entries","current-month","callsign","start-date",
                 "week1-checks","milestones-checks","objection-practice","call-review-log","kpi-actuals","anti-habits-checks","routine-pref"];
@@ -1078,7 +1110,7 @@ function updateStorageBadge(){
     if(signOutBtn) signOutBtn.style.display = "none";
   }
 }
-
+ 
 /* ---- Auth gate (only active when SUPABASE_CONFIGURED) ---- */
 function showAuthStatus(msg){ document.getElementById("authStatus").textContent = msg || ""; }
 async function tryAuthedBoot(){
@@ -1120,7 +1152,7 @@ document.getElementById("signOutBtn").addEventListener("click", async ()=>{
   await sb.auth.signOut();
   location.reload();
 });
-
+ 
 /* ========================= TAB NAV ========================= */
 document.getElementById("tabs").addEventListener("click", (e)=>{
   if(e.target.tagName !== "BUTTON") return;
@@ -1129,7 +1161,7 @@ document.getElementById("tabs").addEventListener("click", (e)=>{
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById("view-"+view).classList.add("active");
 });
-
+ 
 /* ========================= RENDER: DASHBOARD ========================= */
 function computeOverallReadiness(){
   let totalItems=0, doneItems=0;
@@ -1150,13 +1182,13 @@ function computeOverallReadiness(){
   const overall = (roadmapPct*0.5 + bookPct*0.25 + rpPct*0.25);
   return {overall, roadmapPct, bookPct, rpPct, bookDone, rpDone};
 }
-
+ 
 function renderMonthSelector(){
   const sel = document.getElementById("monthSelector");
   sel.innerHTML = MONTHS.map(m=>`<option value="${m.n}" ${m.n===STATE.currentMonth?"selected":""}>Month ${m.n} — ${m.name}</option>`).join("");
   sel.onchange = ()=>{ STATE.currentMonth = parseInt(sel.value); persist("current-month", STATE.currentMonth); renderDashboard(); };
 }
-
+ 
 function renderDashboard(){
   const {overall, bookDone, rpDone} = computeOverallReadiness();
   const pct = Math.round(overall*100);
@@ -1164,17 +1196,17 @@ function renderDashboard(){
   const circumference = 578;
   const offset = circumference - (circumference*overall);
   document.getElementById("gaugeArc").setAttribute("stroke-dashoffset", offset);
-
+ 
   const start = new Date(STATE.startDate);
   const now = new Date();
   const days = Math.max(1, Math.floor((now-start)/86400000)+1);
   document.getElementById("dayCount").textContent = "DAY "+String(days).padStart(3,"0");
-
+ 
   document.getElementById("statMonth").innerHTML = STATE.currentMonth+"<small>/12</small>";
   document.getElementById("statBooks").innerHTML = bookDone+"<small>/19</small>";
   document.getElementById("statRoleplay").innerHTML = rpDone+"<small>/50</small>";
   document.getElementById("statStreak").innerHTML = computeStreak()+"<small> day</small>";
-
+ 
   const m = MONTHS[STATE.currentMonth-1];
   document.getElementById("monthGoalText").textContent = m.goal;
   const focusHtml = m.grad.map((g,i)=>{
@@ -1183,7 +1215,7 @@ function renderDashboard(){
     return `<div class="focus-line"><span class="dot ${done?'':'off'}"></span><span>${g}</span></div>`;
   }).join("");
   document.getElementById("dashFocusList").innerHTML = focusHtml;
-
+ 
   // level
   const lastScore = STATE.scoreboard.length? STATE.scoreboard[STATE.scoreboard.length-1].total : 0;
   let levelIdx = 1, levelName="Foundation";
@@ -1195,7 +1227,7 @@ function renderDashboard(){
   document.getElementById("levelTag").textContent = "Level "+levelIdx+" — "+levelName;
   document.getElementById("levelTrack").innerHTML = [1,2,3,4,5].map(i=>`<div class="level-seg ${i<=levelIdx?'filled':''}"></div>`).join("");
 }
-
+ 
 function computeStreak(){
   if(!STATE.journal.length) return 0;
   const dates = [...new Set(STATE.journal.map(e=>e.date))].sort().reverse();
@@ -1207,7 +1239,7 @@ function computeStreak(){
   }
   return streak;
 }
-
+ 
 /* ========================= RENDER: ROADMAP ========================= */
 function renderMonths(){
   const container = document.getElementById("monthsContainer");
@@ -1215,7 +1247,7 @@ function renderMonths(){
     const cats = [["skills",m.skills],["kpis",m.kpis],["tests",m.tests],["grad",m.grad]];
     let total=0, done=0;
     cats.forEach(([cat,list])=>list.forEach((_,ii)=>{ total++; if(STATE.roadmap[mi+"_"+cat+"_"+ii]) done++; }));
-
+ 
     const colHtml = (title,cat,list)=>`
       <div class="check-col-title">${title}</div>
       ${list.map((txt,ii)=>{
@@ -1224,7 +1256,7 @@ function renderMonths(){
         return `<label class="check-item"><input type="checkbox" data-key="${key}" ${checked}><span class="txt">${txt}</span></label>`;
       }).join("")}
     `;
-
+ 
     return `<div class="month-item" data-idx="${mi}">
       <div class="month-head">
         <div class="month-head-left">
@@ -1254,7 +1286,7 @@ function renderMonths(){
       </div>
     </div>`;
   }).join("");
-
+ 
   container.querySelectorAll(".month-head").forEach(h=>{
     h.addEventListener("click",()=>{ h.closest(".month-item").classList.toggle("open"); });
   });
@@ -1270,7 +1302,7 @@ function renderMonths(){
   const cur = container.querySelector(`.month-item[data-idx="${STATE.currentMonth-1}"]`);
   if(cur) cur.classList.add("open");
 }
-
+ 
 /* ========================= RENDER: BOOKS ========================= */
 function renderBooks(){
   const tbody = document.getElementById("booksBody");
@@ -1302,7 +1334,7 @@ function renderBooks(){
   const finished = BOOKS.filter(b=>STATE.books[b.id]==="Finished").length;
   document.getElementById("bookProgressTag").textContent = finished+"/19 finished";
 }
-
+ 
 /* ========================= RENDER: ROLEPLAY ========================= */
 function renderRoleplay(filter="all"){
   const tbody = document.getElementById("roleplayBody");
@@ -1319,7 +1351,7 @@ function renderRoleplay(filter="all"){
       <td><input type="number" class="score-input rp-score" data-id="${r.id}" min="0" max="100" placeholder="—" value="${prog.score||""}"></td>
     </tr>`;
   }).join("");
-
+ 
   tbody.querySelectorAll(".rp-done").forEach(cb=>{
     cb.addEventListener("change",()=>{
       const id = cb.dataset.id;
@@ -1347,7 +1379,7 @@ function updateRoleplayTag(){
   document.getElementById("roleplayProgressTag").textContent = done+"/50 logged";
 }
 document.getElementById("rpFilter").addEventListener("change",(e)=>renderRoleplay(e.target.value));
-
+ 
 /* ========================= RENDER: JOURNAL ========================= */
 function renderJournal(){
   const list = document.getElementById("journalList");
@@ -1373,7 +1405,7 @@ function renderJournal(){
   `).join("");
 }
 function escapeHtml(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
-
+ 
 document.getElementById("jSubmit").addEventListener("click",()=>{
   const entry = {
     date: new Date().toISOString().slice(0,10),
@@ -1391,7 +1423,7 @@ document.getElementById("jSubmit").addEventListener("click",()=>{
   renderJournal();
   renderDashboard();
 });
-
+ 
 /* ========================= RENDER: SCOREBOARD ========================= */
 let currentSbValues = {};
 function renderScoreboardInputs(){
@@ -1463,7 +1495,7 @@ function drawSparkline(vals){
     ${dots}
   `;
 }
-
+ 
 /* ========================= RENDER: FIRST 90 DAYS ========================= */
 function renderFirst90(){
   const w1 = document.getElementById("week1Container");
@@ -1493,14 +1525,14 @@ function renderFirst90(){
   let totalW1=0, doneW1=0;
   WEEK1_DAYS.forEach(day=>day.tasks.forEach((_,ti)=>{ totalW1++; if(STATE.week1["d"+day.d+"_"+ti]) doneW1++; }));
   document.getElementById("week1Tag").textContent = doneW1+"/"+totalW1+" tasks logged";
-
+ 
   document.getElementById("weeks234Container").innerHTML = WEEKS234.map(w=>`
     <div style="margin-bottom:16px;">
       <div class="check-col-title" style="margin-top:0;">${w.w} <span style="color:var(--muted); text-transform:none; letter-spacing:0; font-weight:400;">— ${w.focus}</span></div>
       ${w.routine.map(r=>`<div class="focus-line"><span class="dot off"></span><span>${r}</span></div>`).join("")}
     </div>
   `).join("");
-
+ 
   const ms = document.getElementById("milestonesContainer");
   ms.innerHTML = MILESTONES_90.map((grp,gi)=>`
     <div style="margin-bottom:18px;">
@@ -1521,7 +1553,7 @@ function updateMilestoneTag(){
   MILESTONES_90.forEach((grp,gi)=>grp.items.forEach((_,ii)=>{ total++; if(STATE.milestones["m"+gi+"_"+ii]) done++; }));
   document.getElementById("milestoneTag").textContent = done+"/"+total+" hit";
 }
-
+ 
 /* ========================= RENDER: ROUTINES ========================= */
 function renderRoutines(){
   const sel = document.getElementById("routineVersion");
@@ -1535,7 +1567,7 @@ function rowHtml(r){ return `<tr><td class="mono" style="color:var(--brass);">${
 function renderDailyRoutine(){
   document.querySelector("#dailyRoutineTable tbody").innerHTML = DAILY_ROUTINES[STATE.routinePref].map(r=>rowHtml(r)).join("");
 }
-
+ 
 /* ========================= RENDER: OBJECTIONS ========================= */
 function renderObjections(){
   document.getElementById("objectionsContainer").innerHTML = OBJECTIONS.map((o,oi)=>{
@@ -1571,7 +1603,7 @@ function renderObjections(){
     renderObjections();
   }));
 }
-
+ 
 /* ========================= RENDER: CALL REVIEW (170pt) ========================= */
 let crValues = {};
 function renderCallReviewInputs(){
@@ -1628,7 +1660,7 @@ function drawSparklineGeneric(svgId, vals, max){
   const dots = pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="#c9974b"/>`).join("");
   svg.innerHTML = `<line x1="10" y1="${h-pad}" x2="${w-10}" y2="${h-pad}" stroke="#2c323d"/><path d="${path}" fill="none" stroke="#c9974b" stroke-width="2"/>${dots}`;
 }
-
+ 
 /* ========================= RENDER: KPI DASHBOARD ========================= */
 function renderKpis(){
   renderKpiTable("kpiActivityBody", KPI_ACTIVITY, "act");
@@ -1648,7 +1680,7 @@ function renderKpiTable(elId, data, prefix){
     persist("kpi-actuals", STATE.kpiActuals);
   }));
 }
-
+ 
 /* ========================= RENDER: COMPETENCY LEVELS ========================= */
 function renderLevels(){
   document.getElementById("levelsContainer").innerHTML = LEVELS.map(l=>`
@@ -1680,23 +1712,33 @@ function renderLevels(){
     </div>
   `).join("");
 }
-
+ 
 /* ========================= RENDER: STRATEGY PLAYBOOK ========================= */
+/* ========================= RENDER: FRAMEWORKS ========================= */
+function renderFrameworks(){
+  document.getElementById("frameworksContainer").innerHTML = FRAMEWORKS.map(fw=>`
+    <div style="margin-bottom:18px;">
+      <div class="check-col-title" style="margin-top:0;">${fw.name} <span style="color:var(--muted); text-transform:none; letter-spacing:0; font-weight:400;">— ${fw.use}</span></div>
+      ${fw.stages.map(s=>`<div class="focus-line"><span class="dot"></span><span><b style="color:var(--text);">${s[0]}:</b> <span style="color:var(--muted);">${s[1]}</span></span></div>`).join("")}
+    </div>
+  `).join("");
+}
+ 
 function renderPlaybook(){
   document.getElementById("psychDrivers").innerHTML = PSYCH_DRIVERS.map(d=>`<div class="focus-line"><span class="dot"></span><span>${d}</span></div>`).join("");
   document.getElementById("psychHesitations").innerHTML = PSYCH_HESITATIONS.map(d=>`<div class="focus-line"><span class="dot off"></span><span>${d}</span></div>`).join("");
   document.getElementById("psychDecision").innerHTML = PSYCH_DECISION.map((d,i)=>`<div class="focus-line"><span class="mono" style="color:var(--brass); width:16px;">${i+1}</span><span>${d}</span></div>`).join("");
   document.getElementById("psychSegmentBody").innerHTML = PSYCH_SEGMENTS.map(s=>`<tr>${s.map((c,i)=>i===0?`<td><b>${c}</b></td>`:`<td style="color:var(--muted); font-size:12.5px;">${c}</td>`).join("")}</tr>`).join("");
-
+ 
   document.getElementById("careerBody").innerHTML = CAREER_STAGES.map(s=>`<tr><td><b>${s[0]}</b></td><td class="mono" style="color:var(--muted); font-size:12px;">${s[1]}</td><td style="color:var(--muted); font-size:12.5px;">${s[2]}</td><td class="mono" style="font-size:12px; color:var(--brass);">${s[3]}</td><td style="color:var(--signal); font-size:12px;">${s[4]}</td></tr>`).join("");
   document.getElementById("promotableList").innerHTML = PROMOTABLE.map((p,i)=>`<div class="focus-line"><span class="mono" style="color:var(--brass); width:16px;">${i+1}</span><span>${p}</span></div>`).join("");
-
+ 
   document.getElementById("industryBody").innerHTML = INDUSTRIES.map(r=>`<tr><td><b>${r[0]}</b></td><td class="mono">${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td><td class="mono">${r[4]}</td><td class="mono">${r[5]}</td><td class="mono">${r[6]}</td><td class="mono" style="color:var(--brass); font-weight:700;">${r[6]}</td></tr>`).join("");
-
+ 
   document.getElementById("experienceBody").innerHTML = EXPERIENCE_METHODS.map(m=>`<tr><td>${m[0]}</td><td style="color:var(--success); font-size:12.5px;">${m[1]}</td><td style="color:var(--muted); font-size:12.5px;">${m[2]}</td></tr>`).join("");
   document.getElementById("scamsList").innerHTML = SCAMS.map(s=>`<div class="focus-line"><span class="dot" style="background:var(--signal);"></span><span>${s}</span></div>`).join("");
 }
-
+ 
 /* ========================= RENDER: HABITS ========================= */
 function renderHabits(){
   document.getElementById("habitsDaily").innerHTML = HABITS_DAILY.map(h=>`<div class="focus-line"><span class="dot"></span><span>${h}</span></div>`).join("");
@@ -1705,7 +1747,7 @@ function renderHabits(){
   document.getElementById("habitsQuarterly").innerHTML = HABITS_QUARTERLY.map(h=>`<div class="focus-line"><span class="dot off"></span><span>${h}</span></div>`).join("");
   document.getElementById("habitsMatter").innerHTML = HABITS_MATTER.map(h=>`<div class="focus-line"><span class="dot" style="background:var(--success);"></span><span>${h}</span></div>`).join("");
   document.getElementById("habitsTheater").innerHTML = HABITS_THEATER.map(h=>`<div class="focus-line"><span class="dot" style="background:var(--signal);"></span><span>${h}</span></div>`).join("");
-
+ 
   const container = document.getElementById("antiHabitsContainer");
   container.innerHTML = ANTI_HABITS.map((a,i)=>{
     const checked = STATE.antiHabits[i] ? "checked" : "";
@@ -1725,21 +1767,21 @@ function updateAntiHabitTag(){
   const done = Object.values(STATE.antiHabits).filter(Boolean).length;
   document.getElementById("antiHabitTag").textContent = done+"/"+ANTI_HABITS.length+" eliminated";
 }
-
+ 
 /* ========================= RENDER: RULES ========================= */
 function renderRules(){
   document.getElementById("rulesList").innerHTML = RULES.map((r,i)=>`
     <div class="rule-quote"><span class="rule-num">${String(i+1).padStart(2,"0")}</span>${r}</div>
   `).join("");
 }
-
+ 
 /* ========================= CALLSIGN ========================= */
 const callsignInput = document.getElementById("callsignInput");
 callsignInput.addEventListener("change",()=>{
   STATE.callsign = callsignInput.value;
   persist("callsign", STATE.callsign);
 });
-
+ 
 /* ========================= INIT ========================= */
 async function startApp(){
   await loadState();
@@ -1759,6 +1801,7 @@ async function startApp(){
   renderScoreboardInputs();
   renderScoreHistory();
   renderLevels();
+  renderFrameworks();
   renderPlaybook();
   renderHabits();
   renderRules();
